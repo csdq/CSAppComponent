@@ -1,0 +1,12 @@
+platform :ios, '8.0'
+use_frameworks!
+
+target 'CSAppComponent_Example' do
+  pod 'CSAppComponent', :path => '../'
+
+  target 'CSAppComponent_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

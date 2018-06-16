@@ -1,0 +1,14 @@
+<!DOCTYPE>
+<html>
+<title>test</title>
+<body>
+    <div>
+        <input type='button' onCLick='sayHello();' value='Say Hello'/>
+    </div>
+</body>
+<script>
+    function sayHello(){
+        window.webkit.messageHandlers.iOSApp.postMessage({body:"hi"});
+    }
+    </script>
+</html>
