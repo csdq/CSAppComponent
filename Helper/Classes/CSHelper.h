@@ -51,7 +51,7 @@ fprintf(stderr, "-----------------------------------------\n\n");           \
  * name  属性名称
  * code  代码块，返回属性实例对象
  */
-#define CS_PROPERTY_INIT(class,name,code)\
+#define CS_PROPERTY_INIT_CODE(class,name,code)\
 - (class *)name{if(_##name == nil){_##name = \
 (code);\
 }return _##name;}

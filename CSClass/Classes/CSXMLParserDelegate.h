@@ -16,16 +16,16 @@
 @end
 
 
-@interface CSResponseStateModel : NSObject
+@interface CSXMLResponseStateModel : NSObject
 @property (nonatomic , strong) NSString *code;
 @property (nonatomic , strong) NSString *info;
 @end
 
-typedef void(^CSOAParseFinishBlock)(CSResponseStateModel *state,NSArray *resultArray);
+typedef void(^CSOAParseFinishBlock)(CSXMLResponseStateModel *state,NSArray *resultArray);
 
 @interface CSXMLParserDelegate : NSObject<NSXMLParserDelegate>
 @property (nonatomic , strong , readonly) NSArray *resultArray;
-@property (nonatomic , strong , readonly) CSResponseStateModel *stateModel;
+@property (nonatomic , strong , readonly) CSXMLResponseStateModel *stateModel;
 @property (nonatomic , strong) CSOAParseFinishBlock finishBlock;
 @property (nonatomic , strong) NSString *modelName;
 @property (nonatomic , strong) NSString *modelStartTag;

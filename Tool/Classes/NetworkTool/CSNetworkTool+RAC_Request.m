@@ -6,19 +6,13 @@
 //
 
 #import "CSNetworkTool+RAC_Request.h"
-#import "CSAppComponent.h"
+#import "CSDataTool.h"
 #import <AFNetworking/AFNetworking.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
-
-@implementation CSResponseStateModel
-@end
-@implementation CSXMLBaseModel
-@end
 
 @implementation CSNetworkTool (RAC_Request)
 - (RACSubject *(^)(void))rac_request{
     return ^{
-        @weakify(self)
         RACSubject *subject = self.resultSubject;
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
@@ -34,14 +28,12 @@
                     //                    model.iSuccess = YES;
                     //                    [subject sendNext:model];
                 } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                    @strongify(self)
                     CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     model.task = task;
                     model.iSuccess = YES;
                     model.responseObject = responseObject;
                     [subject sendNext:model];
                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                    @strongify(self)
                     CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     model.task = task;
                     model.iSuccess = NO;
@@ -53,21 +45,18 @@
             case CSHttpMethodPost:
             default:
             {
-                @weakify(self)
                 self->_currentTask = [manager POST:self->_url parameters:self->_argument progress:^(NSProgress * _Nonnull uploadProgress) {
                     //                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     //                    model.progress = uploadProgress;
                     //                    model.iSuccess = YES;
                     //                    [subject sendNext:model];
                 } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                    @strongify(self)
                     CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     model.task = task;
                     model.responseObject = responseObject;
                     model.iSuccess = YES;
                     [subject sendNext:model];
                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                    @strongify(self)
                     CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     model.task = task;
                     model.iSuccess = NO;
@@ -92,7 +81,6 @@
             case CSHttpMethodPost:
             default:
             {
-                @weakify(self)
                 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self->_url]];
                 NSString *soapXML = self->_argument[K_NETWORKTOOL_ARGUMENT_KEY_SOAP_XML];
                 NSString *msgLength = [NSString stringWithFormat:@"%lu", (unsigned long)[soapXML length]];

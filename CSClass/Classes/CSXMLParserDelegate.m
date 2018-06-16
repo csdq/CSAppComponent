@@ -9,6 +9,11 @@
 #import "CSXMLParserDelegate.h"
 #import <objc/runtime.h>
 
+@implementation CSXMLResponseStateModel
+@end
+@implementation CSXMLBaseModel
+@end
+
 @interface CSXMLParserDelegate()
 {
     Ivar *ivarList;
@@ -76,7 +81,7 @@
         }
     }
     if([elementName isEqualToString:@"ret_code"]){
-        _stateModel = [CSResponseStateModel new];
+        _stateModel = [CSXMLResponseStateModel new];
         return;
     }
 }
@@ -140,7 +145,7 @@
 
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError{
     if(_finishBlock){
-        _stateModel = [CSResponseStateModel new];
+        _stateModel = [CSXMLResponseStateModel new];
         _stateModel.code = @"-1";
         _stateModel.info = [NSString stringWithFormat:@"解析错误:%@",parseError.localizedDescription];
         _finishBlock(_stateModel,_resultArray);
@@ -149,7 +154,7 @@
 
 - (void)parser:(NSXMLParser *)parser validationErrorOccurred:(NSError *)validationError{
     if(_finishBlock){
-        _stateModel = [CSResponseStateModel new];
+        _stateModel = [CSXMLResponseStateModel new];
         _stateModel.code = @"-1";
         _stateModel.info = [NSString stringWithFormat:@"验证错误:%@",validationError.localizedDescription];
         _finishBlock(_stateModel,_resultArray);

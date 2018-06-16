@@ -86,7 +86,7 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
 
 @implementation CSNetworkTool
 
-CS_PROPERTY_INIT(NSMutableURLRequest, request, {
+CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
     [[NSMutableURLRequest alloc] init];
 })
 

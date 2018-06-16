@@ -7,7 +7,6 @@
 //
 
 #import "CSSearchBar.h"
-#import "CSBaseSetting.h"
 @interface CSSearchBar()<UITextFieldDelegate>
 {
     UITextField *_searchTF;
@@ -65,7 +64,7 @@
     _cancelBtn.layer.cornerRadius = 4;
     _searchTF.translatesAutoresizingMaskIntoConstraints = NO;
 //    _cancelBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [_cancelBtn setTitle:NSLocalizedStringFromTableInBundle(@"CancelBtnTitle", @"Localizable", [CSBaseSetting cs_base_res_bundle], @"取消") forState:UIControlStateNormal];
+    [_cancelBtn setTitle:NSLocalizedStringFromTableInBundle(@"CancelBtnTitle", @"Localizable", [self resBundle], @"取消") forState:UIControlStateNormal];
     _cancelBtn.backgroundColor = self.tintColor;
     [_cancelBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _cancelBtn.titleLabel.font = [UIFont systemFontOfSize:14.0f];
@@ -200,4 +199,7 @@
     }
 }
 
+- (NSBundle *)resBundle{
+   return [NSBundle bundleWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"CSAppComponent" ofType:@"bundle"]];
+}
 @end

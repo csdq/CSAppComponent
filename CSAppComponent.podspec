@@ -35,6 +35,7 @@ Pod::Spec.new do |s|
     s.subspec 'CSClass' do |ss|
         ss.source_files = 'CSClass/Classes/**/*'
         ss.public_header_files = 'CSClass/Classes/**/*.h'
+        ss.dependency 'CSDataModel', '~> 1.0.0'
     end
     #helper 包含常用宏定义 错误定义等
     s.subspec 'Helper' do |ss|

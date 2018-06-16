@@ -154,7 +154,7 @@ CS_LINKCODE_METHOD_IMP(CSWebViewController, NSString, baseURL, {
     wSelf->_baseURL = [NSURL URLWithString:value];
 })
 
-CS_PROPERTY_INIT(RACSubject, webSubject, {
+CS_PROPERTY_INIT_CODE(RACSubject, webSubject, {
     [RACSubject subject];
 })
 
