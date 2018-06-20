@@ -136,11 +136,11 @@
     [self.webSubject sendNext:message];
 }
 //MARK:
-CS_LINKCODE_METHOD_IMP(CSWebViewController, NSString, loadURL, {
-    if([value hasPrefix:@"http"]){
-        wSelf->_request = [NSURLRequest requestWithURL:[NSURL URLWithString:value]];
+CS_LINKCODE_METHOD_IMP(CSWebViewController, NSURL, loadURL, {
+    if([value.absoluteString hasPrefix:@"http"] || [value.absoluteString hasPrefix:@"file"] || [value.absoluteString hasPrefix:@"ftp"]){
+        wSelf->_request = [NSURLRequest requestWithURL:value];
     }else{
-        wSelf->_request = [NSURLRequest requestWithURL:[NSURL URLWithString:[wSelf->_baseURL.absoluteString stringByAppendingString:value]]];
+        wSelf->_request = [NSURLRequest requestWithURL:[NSURL URLWithString:[wSelf->_baseURL.absoluteString stringByAppendingString:value.absoluteString]]];
     }
     NSLog(@"%@",wSelf->_request.URL);
     [wSelf.webView loadRequest:wSelf->_request];
@@ -150,8 +150,8 @@ CS_LINKCODE_METHOD_IMP(CSWebViewController, NSString, loadHTML, {
     [wSelf.webView loadHTMLString:value baseURL:wSelf->_baseURL];
 })
 
-CS_LINKCODE_METHOD_IMP(CSWebViewController, NSString, baseURL, {
-    wSelf->_baseURL = [NSURL URLWithString:value];
+CS_LINKCODE_METHOD_IMP(CSWebViewController, NSURL, baseURL, {
+    wSelf->_baseURL = value;
 })
 
 CS_PROPERTY_INIT_CODE(RACSubject, webSubject, {

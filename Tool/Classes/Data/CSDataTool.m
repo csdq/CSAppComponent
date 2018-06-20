@@ -6,10 +6,7 @@
 //
 
 #import "CSDataTool.h"
-#import <CommonCrypto/CommonDigest.h>
-#import <CommonCrypto/CommonCryptor.h>
-#import <CommonCrypto/CommonKeyDerivation.h>
-#import <Security/Security.h>
+#import "CSDataSecurity.h"
 
 @implementation CSDataTool
 + (BOOL)isCellPhoneNum:(NSString *)str{
@@ -136,16 +133,6 @@
     return @"#Error";
 }
 
-+ (NSString *)getMD5HexDigest:(NSString *)string{
-    const char *original_str = [string UTF8String];
-    unsigned char result[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(original_str, (CC_LONG)strlen(original_str), result);
-    NSMutableString *hash = [NSMutableString string];
-    for (int i = 0; i < 16; i++)
-        [hash appendFormat:@"%02X", result[i]];
-    return [hash lowercaseString];
-}
-
 + (NSString *)getMD5:(NSString *)string {
     return [[self md5:string] uppercaseString];
 }
@@ -155,107 +142,31 @@
 }
 
 + (NSString *)md5:(NSString *)string {
-    const char *cStr = [string UTF8String];
-    unsigned char result[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(cStr, (CC_LONG)strlen(cStr), result);
-    
-    NSString *MD5str = [[NSString stringWithFormat:@"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
-                         result[0], result[1], result[2], result[3],
-                         result[4], result[5], result[6], result[7],
-                         result[8], result[9], result[10], result[11],
-                         result[12], result[13], result[14], result[15]
-                         ] lowercaseString];
-    for (int i = 0; i < 16; i++) {
-        result[i] = '\0';
-    }
-    return MD5str;
+    return [CSDataSecurity md5:string];
 }
 
-const NSUInteger kPBKDFRounds = 10000;  // ~80ms on an iPhone 4
-
-static Byte saltBuff[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
-
-static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
-
-+ (NSString *)aesEncrption:(NSString *)plainText
-                       key:(NSString *)key{
-    NSData *data = [plainText dataUsingEncoding:NSUTF8StringEncoding];
-    // 'key' should be 32 bytes for AES256, will be null-padded otherwise
-    char keyPtr[kCCKeySizeAES128+1]; // room for terminator (unused)
-    bzero(keyPtr, sizeof(keyPtr)); // fill with zeroes (for padding)
-    
-    NSUInteger dataLength = [data length];
-    
-    size_t bufferSize = dataLength + kCCBlockSizeAES128;
-    void *buffer = malloc(bufferSize);
-    bzero(buffer, sizeof(buffer));
-    
-    size_t numBytesEncrypted = 0;
-    
-    CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt, kCCAlgorithmAES128,kCCOptionPKCS7Padding,
-                                          [[self AESKeyForPassword:key] bytes], kCCKeySizeAES128,
-                                          ivBuff /* initialization vector (optional) */,
-                                          [data bytes], dataLength, /* input */
-                                          buffer, bufferSize, /* output */
-                                          &numBytesEncrypted);
-    if (cryptStatus == kCCSuccess) {
-        NSData *encryptData = [NSData dataWithBytesNoCopy:buffer length:numBytesEncrypted];
-        return [self base64EncodedStringFrom:encryptData];
-    }
-    free(buffer); //free the buffer;
-    return nil;
++ (NSString *)rsaEncryption:(NSString *)str prikey:(NSString *)key{
+    return [CSDataSecurity rsa_encryptString:str privateKey:key];
 }
 
-+ (NSString *)aesDecryption:(NSString *)decryptedText
-                        key:(NSString *)key{
-    NSData *data = [self getDataFromBase64String:decryptedText];
-    // 'key' should be 32 bytes for AES256, will be null-padded otherwise
-    char keyPtr[kCCKeySizeAES128+1]; // room for terminator (unused)
-    bzero(keyPtr, sizeof(keyPtr)); // fill with zeroes (for padding)
-    
-    NSUInteger dataLength = [data length];
-    
-    size_t bufferSize = dataLength + kCCBlockSizeAES128;
-    void *buffer = malloc(bufferSize);
-    
-    size_t numBytesDecrypted = 0;
-    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
-                                          [[self AESKeyForPassword:key] bytes], kCCKeySizeAES128,
-                                          ivBuff ,/* initialization vector (optional) */
-                                          [data bytes], dataLength, /* input */
-                                          buffer, bufferSize, /* output */
-                                          &numBytesDecrypted);
-    
-    if (cryptStatus == kCCSuccess) {
-        NSData *decryptData = [NSData dataWithBytesNoCopy:buffer length:numBytesDecrypted];
-        return [[[NSString alloc] initWithData:decryptData encoding:NSUTF8StringEncoding] init];
-    }
-    
-    free(buffer); //free the buffer;
-    return nil;
++ (NSString *)rsaDecryption:(NSString *)str pubkey:(NSString *)key{
+    return [CSDataSecurity rsa_decryptString:str publicKey:key];
 }
 
-#pragma makr - private
-+ (NSData *)AESKeyForPassword:(NSString *)password{
-    NSMutableData *derivedKey = [NSMutableData dataWithLength:kCCKeySizeAES128];
-    
-    NSData *salt = [NSData dataWithBytes:saltBuff length:kCCKeySizeAES128];
-    
-    int result = CCKeyDerivationPBKDF(kCCPBKDF2,        // algorithm算法
-                                      password.UTF8String,  // password密码
-                                      password.length,      // passwordLength密码的长度
-                                      salt.bytes,           // salt内容
-                                      salt.length,          // saltLen长度
-                                      kCCPRFHmacAlgSHA1,    // PRF
-                                      kPBKDFRounds,         // rounds循环次数
-                                      derivedKey.mutableBytes, // derivedKey
-                                      derivedKey.length);   // derivedKeyLen derive:出自
-    if(result!=kCCSuccess){
-        
-    }
-    NSAssert(result == kCCSuccess,
-             @"Unable to create AES key for spassword: %d", result);
-    return derivedKey;
++ (NSString *)rsaEncryption:(NSString *)str pubkey:(NSString *)key{
+    return [CSDataSecurity rsa_encryptString:str publicKey:key];
+}
+
++ (NSString *)rsaDecryption:(NSString *)str prikey:(NSString *)key{
+    return [CSDataSecurity rsa_decryptString:str privateKey:key];
+}
+
++ (NSString *)aesEncrption:(NSString *)str key:(NSString *)key{
+    return [CSDataSecurity aes_encryptString:str password:key];
+}
+
++ (NSString *)aesDecryption:(NSString *)str key:(NSString *)key{
+    return [CSDataSecurity aes_decryptString:str password:key];
 }
 
 + (NSString *)encodeBase64String:(NSString *)string{
@@ -378,7 +289,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
                                                                                                     kCFStringEncodingUTF8));
     
     return encodedString;
-    //   return [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 + (NSString *)urlDecode:(NSString *)url{
@@ -417,21 +327,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:string attributes:oDict];
     [attr setAttributes:hDict range:range1];
     return attr;
-}
-
-+ (NSData *)rsaDecryption:(NSData *)data{
-    //    OSStatus sanityCheck = SecKeyEncrypt(publicKey,
-    //                                         kSecPaddingPKCS1,
-    //                                         (const uint8_t *) [incomingData bytes],
-    //                                         keyBufferSize,
-    //                                         cipherBuffer,
-    //                                         &cipherBufferSize
-    //                                         );
-    return nil;
-}
-
-+ (NSData *)rsaEncryption:(NSData *)data{
-    return nil;
 }
 
 + (NSDateComponents *)getAgeWithIDCardNum:(NSString *)idCard{

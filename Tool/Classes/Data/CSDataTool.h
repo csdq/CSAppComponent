@@ -55,13 +55,15 @@
 
 + (NSString *)getMD5InMD5:(NSString *)string;
 
-+ (NSData *)rsaDecryption:(NSData *)data;
++ (NSString *)rsaEncryption:(NSString *)str prikey:(NSString *)key;
++ (NSString *)rsaDecryption:(NSString *)str pubkey:(NSString *)key;
 
-+ (NSData *)rsaEncryption:(NSData *)data;
++ (NSString *)rsaEncryption:(NSString *)str pubkey:(NSString *)key;
++ (NSString *)rsaDecryption:(NSString *)str prikey:(NSString *)key;
 
-+ (NSString *)aesEncrption:(NSString *)plainText key:(NSString *)key;
 
-+ (NSString *)aesDecryption:(NSString *)decryptedText key:(NSString *)key;
++ (NSString *)aesEncrption:(NSString *)str key:(NSString *)key;
++ (NSString *)aesDecryption:(NSString *)str key:(NSString *)key;
 
 //MARK:扩展
 

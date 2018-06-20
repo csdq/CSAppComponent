@@ -212,11 +212,12 @@ CGFloat CS_NavgiationBar_Height = 44.0;
 
 - (void)relayoutLeftView{
     CGSize originSize = _rightView.frame.size;
-    [_leftView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_leftView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.greaterThanOrEqualTo(self.mas_bottom);
         make.top.greaterThanOrEqualTo(self.mas_top);
         if(originSize.height > 0 && originSize.width > 0){
-            make.size.mas_equalTo(originSize);
+            make.height.lessThanOrEqualTo(self.mas_height);
+            make.height.mas_equalTo(originSize.height).priorityLow();
         }
         if(self.backBtn && self.backBtn.superview && !self.backBtn.hidden && self.backBtn.alpha>0){
             //返回按钮显示
@@ -232,13 +233,14 @@ CGFloat CS_NavgiationBar_Height = 44.0;
 
 - (void)relayoutRightView{
     CGSize originSize = _rightView.frame.size;
-    [_rightView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_rightView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.greaterThanOrEqualTo(self.mas_top);
         make.bottom.greaterThanOrEqualTo(self.mas_bottom);
         make.right.equalTo(self.mas_right).offset(-8);
         make.centerY.equalTo(self.mas_centerY);
         if(originSize.height > 0 && originSize.width > 0){
-            make.size.mas_equalTo(originSize);
+            make.height.lessThanOrEqualTo(self.mas_height);
+            make.height.mas_equalTo(originSize.height).priorityLow();
         }
         make.width.mas_greaterThanOrEqualTo(44);
         make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.25).priorityHigh();

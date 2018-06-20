@@ -46,6 +46,23 @@
     });
     self.title = @"test";
     NSLog(@"%@",self.view.subviews);
+    
+    NSString *result =  [CSDataTool aesEncrption:@"Only u saw what I did" key:@"123456"];
+    NSLog(@"%@",result);
+    NSLog(@"AES D Test : %@",[CSDataTool aesDecryption:result key:@"1"]);
+    NSLog(@"AES D Test : %@",[CSDataTool aesDecryption:result key:@"123456"]);
+    
+    NSString *priKeyPath = [[NSBundle mainBundle] pathForResource:@"rsa_private_key" ofType:@"pem"];
+    NSString *pubKeyPath = [[NSBundle mainBundle] pathForResource:@"rsa_public_key" ofType:@"pem"];
+    NSString *priKey = [NSString stringWithContentsOfFile:priKeyPath encoding:NSASCIIStringEncoding error:nil];
+    NSString *pubKey = [NSString stringWithContentsOfFile:pubKeyPath encoding:NSASCIIStringEncoding error:nil];
+//    priKey = [[priKey substringWithRange:range] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+//    range = NSMakeRange(@"ssh-rsa ".length,pubKey.length - @"ssh-rsa ".length -@" mr.s@MBP".length);
+//    pubKey = [[pubKey substringWithRange:range] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    result = [CSDataTool rsaEncryption:@"I also know" pubkey:pubKey];
+    NSLog(@"RSA : %@\n\n%@", result,[CSDataTool rsaDecryption:result prikey:priKey]);
+    result = [CSDataTool rsaEncryption:@"I also know" prikey:priKey];
+    NSLog(@"RSA : %@\n\n%@", result,[CSDataTool rsaDecryption:result pubkey:pubKey]);
 }
 
 - (void)change{
