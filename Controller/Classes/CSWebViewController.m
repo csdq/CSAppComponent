@@ -39,6 +39,21 @@
         _webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         _webView.navigationDelegate = self;
         _webView.UIDelegate = self;
+        @weakify(self)
+        _webJSCmd = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+            return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+                @strongify(self)
+                if([input isKindOfClass:[NSString class]]){
+                    [self.webView evaluateJavaScript:input completionHandler:^(id _Nullable obj, NSError * _Nullable error) {
+                        @strongify(self)
+                        [self.webJSResultSubject sendNext:obj];
+                    }];
+                }else{
+                    NSLog(@"input should javascript string");
+                }
+                return nil;
+            }];
+        }];
     }
     return _webView;
 }
@@ -158,4 +173,7 @@ CS_PROPERTY_INIT_CODE(RACSubject, webSubject, {
     [RACSubject subject];
 })
 
+CS_PROPERTY_INIT_CODE(RACSubject, webJSResultSubject, {
+    [RACSubject subject];
+})
 @end

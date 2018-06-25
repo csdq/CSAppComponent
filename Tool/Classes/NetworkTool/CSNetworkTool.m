@@ -119,6 +119,7 @@ CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
 - (void)beginRequest{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
     switch (self.httpMethod) {
         case CSHttpMethodPost:
         {
@@ -160,6 +161,7 @@ CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
 - (NSURLSessionDataTask *)cs_request_post{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
 //    manager.securityPolicy.allowInvalidCertificates = YES;
     NSLog(@"CSHTTP REQUEST\n%@%@",_url,_argument);
     return [manager POST:_url parameters:_argument progress:^(NSProgress * _Nonnull uploadProgress) {

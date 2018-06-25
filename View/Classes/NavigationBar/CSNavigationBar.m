@@ -64,7 +64,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         }
     }
     if(_barBackgroundView){
-//        导航栏背景 alpha值修改
+        //        导航栏背景 alpha值修改
         _barBackgroundView.alpha = _barBackgroundViewAlpha;
     }
 }
@@ -102,11 +102,14 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         label.textColor = [UIColor whiteColor];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont boldSystemFontOfSize:18];
+        label.adjustsFontSizeToFitWidth = YES;
+        label.minimumScaleFactor = 0.8;
+        label.numberOfLines = 2;
         [self addSubview:label];
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.mas_centerX);
             make.centerY.equalTo(self.mas_centerY);
-            make.left.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
+            make.left.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.2);
             make.right.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
         }];
         label;
@@ -128,7 +131,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         [btn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self);
             make.centerY.equalTo(self.mas_centerY);
-            make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.4);
+            make.width.mas_lessThanOrEqualTo(MIN(80,K_SCREEN_WIDTH * 0.4));
         }];
         @weakify(self)
         btn.rac_command = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
@@ -157,11 +160,14 @@ CGFloat CS_NavgiationBar_Height = 44.0;
             label.textColor = [UIColor whiteColor];
             label.textAlignment = NSTextAlignmentCenter;
             label.font = [UIFont boldSystemFontOfSize:18];
+            label.numberOfLines = 2;
+            label.minimumScaleFactor = 0.8;
+            label.adjustsFontSizeToFitWidth = YES;
             [self addSubview:label];
             [label mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.centerX.equalTo(self.mas_centerX);
                 make.centerY.equalTo(self.mas_centerY);
-                make.left.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
+                make.left.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.2);
                 make.right.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
             }];
             label;

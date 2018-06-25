@@ -24,6 +24,9 @@
     [super viewDidLoad];
     self.title = @"测试";
     [ProgressHUD show];
+    [CSNetworkTool.createInstance.url(@"https://umc.51yizhen.com/oa/yzwy/appUpdate.json").rac_request() subscribeNext:^(id x) {
+        NSLog(@"%@",x);
+    }];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        [self.cs_navigationBar changeBackgroundAlpha:0.3];
         [ProgressHUD showSuccess:@"加载成功"];
