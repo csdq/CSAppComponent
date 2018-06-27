@@ -106,10 +106,8 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.mas_centerX);
             make.centerY.equalTo(self.mas_centerY);
-            make.width.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.3);
+            make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH);
             make.height.lessThanOrEqualTo(self.mas_height);
-            make.left.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.2);
-            make.right.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
         }];
         label;
     });
@@ -149,10 +147,10 @@ CGFloat CS_NavgiationBar_Height = 44.0;
 - (void)setTitle:(NSString *)title{
     _title = title;
     if([self.titleView isKindOfClass:[UILabel class]]){
-        ((UILabel *)self.titleView).text = (NSString *)_title;
+        ((UILabel *)_titleView).text = (NSString *)_title;
     }else{
         [_titleView removeFromSuperview];
-        self.titleView = ({
+        _titleView = ({
             UILabel *label = [UILabel new];
             label.text = title;
             label.backgroundColor = [UIColor clearColor];
@@ -163,8 +161,8 @@ CGFloat CS_NavgiationBar_Height = 44.0;
             [label mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.centerX.equalTo(self.mas_centerX);
                 make.centerY.equalTo(self.mas_centerY);
-                make.left.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
-                make.right.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
+                make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH);
+                make.height.lessThanOrEqualTo(self.mas_height).priorityHigh();
             }];
             label;
         });
@@ -189,7 +187,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         [_titleView removeFromSuperview];
     }
     _titleView = titleView;
-    if(titleView){
+    if(_titleView){
         [self addSubview:_titleView];
         [self relayoutTitleView];
     }
@@ -236,6 +234,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         make.width.mas_greaterThanOrEqualTo(44);
         make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.25).priorityHigh();
     }];
+    [self layoutIfNeeded];
 }
 
 - (void)relayoutRightView{
@@ -257,6 +256,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.25).priorityHigh();
         make.height.lessThanOrEqualTo(self.mas_height).priorityHigh();
     }];
+    [self layoutIfNeeded];
 }
 
 - (void)relayoutTitleView{
@@ -264,20 +264,16 @@ CGFloat CS_NavgiationBar_Height = 44.0;
     [_titleView mas_remakeConstraints:^(MASConstraintMaker *make) {
         if(originSize.height > 0){
             make.height.mas_equalTo(originSize.height).priorityLow();
-        }else{
-            make.height.mas_equalTo(44);
         }
         if(originSize.width > 0){
             make.width.mas_equalTo(originSize.width).priorityLow();
-        }else{
-            make.width.mas_equalTo(120);
         }
         make.centerX.equalTo(self.mas_centerX);
         make.centerY.equalTo(self.mas_centerY);
-        make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.3);
-        make.left.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.2);
+        make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH);
         make.height.lessThanOrEqualTo(self.mas_height).priorityHigh();
     }];
+    [self layoutIfNeeded];
 }
 
 - (void)changeBackgroundAlpha:(CGFloat)alpha{
