@@ -102,13 +102,12 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         label.textColor = [UIColor whiteColor];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont boldSystemFontOfSize:18];
-        label.adjustsFontSizeToFitWidth = YES;
-        label.minimumScaleFactor = 0.8;
-        label.numberOfLines = 2;
         [self addSubview:label];
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.mas_centerX);
             make.centerY.equalTo(self.mas_centerY);
+            make.width.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.3);
+            make.height.lessThanOrEqualTo(self.mas_height);
             make.left.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.2);
             make.right.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
         }];
@@ -131,7 +130,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         [btn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self);
             make.centerY.equalTo(self.mas_centerY);
-            make.width.mas_lessThanOrEqualTo(MIN(80,K_SCREEN_WIDTH * 0.4));
+            make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.4);
         }];
         @weakify(self)
         btn.rac_command = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
@@ -160,14 +159,11 @@ CGFloat CS_NavgiationBar_Height = 44.0;
             label.textColor = [UIColor whiteColor];
             label.textAlignment = NSTextAlignmentCenter;
             label.font = [UIFont boldSystemFontOfSize:18];
-            label.numberOfLines = 2;
-            label.minimumScaleFactor = 0.8;
-            label.adjustsFontSizeToFitWidth = YES;
             [self addSubview:label];
             [label mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.centerX.equalTo(self.mas_centerX);
                 make.centerY.equalTo(self.mas_centerY);
-                make.left.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.2);
+                make.left.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
                 make.right.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
             }];
             label;
@@ -219,11 +215,15 @@ CGFloat CS_NavgiationBar_Height = 44.0;
 - (void)relayoutLeftView{
     CGSize originSize = _rightView.frame.size;
     [_leftView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.greaterThanOrEqualTo(self.mas_bottom);
-        make.top.greaterThanOrEqualTo(self.mas_top);
-        if(originSize.height > 0 && originSize.width > 0){
-            make.height.lessThanOrEqualTo(self.mas_height);
+        if(originSize.height > 0){
             make.height.mas_equalTo(originSize.height).priorityLow();
+        }else{
+            make.height.mas_equalTo(44);
+        }
+        if(originSize.width > 0){
+            make.width.mas_equalTo(originSize.width).priorityLow();
+        }else{
+            make.width.mas_equalTo(60);
         }
         if(self.backBtn && self.backBtn.superview && !self.backBtn.hidden && self.backBtn.alpha>0){
             //返回按钮显示
@@ -231,6 +231,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         }else{
             make.left.equalTo(self.mas_left).offset(8);
         }
+        make.height.mas_equalTo(originSize.height).priorityLow();
         make.centerY.equalTo(self.mas_centerY);
         make.width.mas_greaterThanOrEqualTo(44);
         make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.25).priorityHigh();
@@ -240,25 +241,42 @@ CGFloat CS_NavgiationBar_Height = 44.0;
 - (void)relayoutRightView{
     CGSize originSize = _rightView.frame.size;
     [_rightView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.greaterThanOrEqualTo(self.mas_top);
-        make.bottom.greaterThanOrEqualTo(self.mas_bottom);
+        if(originSize.height > 0){
+            make.height.mas_equalTo(originSize.height).priorityLow();
+        }else{
+            make.height.mas_equalTo(44);
+        }
+        if(originSize.width > 0){
+            make.width.mas_equalTo(originSize.width).priorityLow();
+        }else{
+            make.width.mas_equalTo(60);
+        }
         make.right.equalTo(self.mas_right).offset(-8);
         make.centerY.equalTo(self.mas_centerY);
-        if(originSize.height > 0 && originSize.width > 0){
-            make.height.lessThanOrEqualTo(self.mas_height);
-            make.height.mas_equalTo(originSize.height).priorityLow();
-        }
         make.width.mas_greaterThanOrEqualTo(44);
         make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.25).priorityHigh();
+        make.height.lessThanOrEqualTo(self.mas_height).priorityHigh();
     }];
 }
 
 - (void)relayoutTitleView{
-    [_titleView mas_makeConstraints:^(MASConstraintMaker *make) {
+    CGSize originSize = _titleView.frame.size;
+    [_titleView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        if(originSize.height > 0){
+            make.height.mas_equalTo(originSize.height).priorityLow();
+        }else{
+            make.height.mas_equalTo(44);
+        }
+        if(originSize.width > 0){
+            make.width.mas_equalTo(originSize.width).priorityLow();
+        }else{
+            make.width.mas_equalTo(120);
+        }
         make.centerX.equalTo(self.mas_centerX);
         make.centerY.equalTo(self.mas_centerY);
-        make.left.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
-        make.right.mas_greaterThanOrEqualTo(-K_SCREEN_WIDTH * 0.2);
+        make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.3);
+        make.left.mas_greaterThanOrEqualTo(K_SCREEN_WIDTH * 0.2);
+        make.height.lessThanOrEqualTo(self.mas_height).priorityHigh();
     }];
 }
 
