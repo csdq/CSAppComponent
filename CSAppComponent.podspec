@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.3'
+    s.version          = '1.0.4'
     s.summary          = '集成封装了常用库和基类'
     
     # This description is used to generate tags and improve search results.
@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
     v1.0.1 CSWebViewController loadURL(NSString) => loadURL(NSURL)
     v1.0.2 细节调整 & fix bug
     v1.0.3 自定义导航栏优化
+    v1.0.4 增加通讯录索引字母栏 & CS_ADD_VIEW_AND_FULLFILL宏定义修改
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'

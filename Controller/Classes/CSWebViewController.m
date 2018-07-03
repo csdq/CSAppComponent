@@ -6,6 +6,7 @@
 //
 
 #import "CSWebViewController.h"
+#import "CSBaseNavViewController.h"
 #import <Webkit/WebKit.h>
 #import <Masonry/Masonry.h>
 @interface CSWebViewController ()<WKNavigationDelegate,WKUIDelegate,WKScriptMessageHandler>

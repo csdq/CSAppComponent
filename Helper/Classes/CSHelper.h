@@ -42,7 +42,25 @@ fprintf(stderr, "-----------------------------------------\n\n");           \
 #define CS_PROPERTY_ASSIGN_DECLARE(type,name) @property (nonatomic, assign) type name;
 
 ///便捷宏方法 需要引用<Masonry/Masonry.h> 自动撑满控制器主视图
-#define CS_ADD_MAIN_VIEW_AND_FULLFILL(Main_View)    ({[self.view addSubview:Main_View];[Main_View mas_makeConstraints:^(MASConstraintMaker *make) {if(@available(iOS 11,*)){make.top.equalTo(self.view.mas_safeAreaLayoutGuideTop);make.right.equalTo(self.view.mas_safeAreaLayoutGuideRight);make.bottom.equalTo(self.view.mas_safeAreaLayoutGuideBottom);make.left.equalTo(self.view.mas_safeAreaLayoutGuideLeft);}else{make.top.equalTo(self.mas_topLayoutGuide).offset(44);make.right.equalTo(self.view.mas_right);make.bottom.equalTo(self.mas_bottomLayoutGuide);make.left.equalTo(self.view.mas_left);}}];});
+#define CS_ADD_MAIN_VIEW_AND_FULLFILL(Main_View) \
+    ({[self.view addSubview:Main_View];\
+    [Main_View mas_makeConstraints:^(MASConstraintMaker *make) {\
+    if(@available(iOS 11,*)){make.top.equalTo(self.view.mas_safeAreaLayoutGuideTop);\
+        make.right.equalTo(self.view.mas_safeAreaLayoutGuideRight);\
+        make.bottom.equalTo(self.view.mas_safeAreaLayoutGuideBottom);\
+        make.left.equalTo(self.view.mas_safeAreaLayoutGuideLeft);\
+    }else{\
+    if(self.cs_navigationBar.superview||([self.navigationController isKindOfClass:[CSNavViewController class]]&&((CSBaseNavViewController *)self.navigationController).useCustomNavigationBar)){\
+        make.top.equalTo(self.mas_topLayoutGuide).offset(44);\
+    }else{\
+        make.top.equalTo(self.mas_topLayoutGuide);\
+    }\
+        make.right.equalTo(self.view.mas_right);\
+        make.bottom.equalTo(self.mas_bottomLayoutGuide);\
+        make.left.equalTo(self.view.mas_left);\
+    }\
+    }];\
+});
 
 #define CS_NO_STRING_VALUE(name) (name == nil || [name isKindOfClass:[NSNull class]] || [name length] == 0)
 /*
@@ -94,3 +112,4 @@ CS_LC_METHOD_VOID(return_type,method_name)
 #define CS_LINKCODE_METHOD_VOID_IMP(return_type,method_name,code)\
 CS_LC_METHOD_VOID_IMP(return_type,method_name,code)
 #endif /* Helper_h */
+

@@ -16,10 +16,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if([[[UIDevice currentDevice] systemVersion] floatValue] < 11.0){
-        self.automaticallyAdjustsScrollViewInsets = NO;
-    }
-    self.view.backgroundColor = [CSBaseSetting settingModel].viewControllerBackgroundColor;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -49,7 +45,10 @@
 }
 //设置视图
 - (void)cs_setView{
-    
+    if([[[UIDevice currentDevice] systemVersion] floatValue] < 11.0){
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    self.view.backgroundColor = [CSBaseSetting settingModel].viewControllerBackgroundColor;
 }
 //设置数据模型／容器
 - (void)cs_setModel{

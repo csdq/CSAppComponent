@@ -43,9 +43,9 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
     }];
     [self _cs_viewDidLoad];
     [self cs_viewDidLoad];
-    [self cs_setView];
     [self cs_setModel];
     [self cs_setViewModel];
+    [self cs_setView];
     if([self respondsToSelector:@selector(requestNewData)]){
         [self requestNewData];
     }

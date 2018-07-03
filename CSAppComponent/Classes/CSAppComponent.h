@@ -17,6 +17,7 @@ FOUNDATION_EXPORT const unsigned char CSAppComponentVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <CSAppComponent/PublicHeader.h>
 #import "CSButton.h"
 #import "CSLinkCode.h"
+#import "CSBaseNavViewController.h"
 #import "CSNavViewController.h"
 #import "CSQLPreviewController.h"
 #import "CSTextLayer.h"
