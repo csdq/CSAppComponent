@@ -7,7 +7,27 @@
 
 #import <Foundation/Foundation.h>
 
+@interface CSDateWeek:NSObject
+@property (nonatomic , strong) NSDate *date;
+@property (nonatomic , strong) NSString *startDateStr;
+@property (nonatomic , strong) NSString *endDateStr;
+@property (nonatomic , strong) NSString *startStrCh;
+@property (nonatomic , strong) NSString *endStrCh;
+@property (nonatomic , strong) NSDate *startDate;
+@property (nonatomic , strong) NSDate *endDate;
+@property (nonatomic , assign) NSUInteger indexOfWeekInMonth;
++ (CSDateWeek *)getWeekObjWithDate:(NSDate *)date;
+- (CSDateWeek *)getNextWeekObj;
+- (CSDateWeek *)getPreviousWeekObj;
+@end
+
 @interface CSDataTool : NSObject
++ (instancetype)sharedInstance;
+@property (nonatomic , strong) NSCalendar *calender;
+@property (nonatomic , strong) NSDateFormatter *dateFormatterDate;
+@property (nonatomic , strong) NSDateFormatter *dateFormatterDateTime;
+@property (nonatomic , strong) NSDateFormatter *dateFormatterChinese;
+@property (nonatomic , strong) NSDateFormatter *dateFormatterReuse;
 //MARK: 数据验证
 ///验证是否为正确的手机号码
 + (BOOL)isCellPhoneNum:(NSString *)str;

@@ -1,5 +1,5 @@
 //
-//  CSLetterIndexView.h
+//  CSIndexLetterView.h
 //  OA
 //
 //  Created by mr.s on 16/7/13.
@@ -10,7 +10,7 @@
 #define kCS_INDEX_HEIGHT 15.0f
 
 typedef void(^CSSelectLetterBlock)(NSString *letter);
-@interface CSLetterIndexView : UIView
+@interface CSIndexLetterView : UIView
 @property (nonatomic , strong) NSArray *dataArray;
 @property (nonatomic , strong) NSNumber* index;
 @property (nonatomic,strong) UIColor * textColor;

@@ -23,4 +23,8 @@
     self.backgroundColor = [UIColor whiteColor];
 }
 
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    self.isViewActive = YES;
+}
 @end

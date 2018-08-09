@@ -33,7 +33,7 @@
     UIBarButtonItem *flxBtn2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 //    UIBarButtonItem *flxBtn3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
    
-    UIBarButtonItem *finishBtn = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"FinishBtnTitle", @"Localizable", [CSBaseSetting cs_base_res_bundle], @"完成") style:UIBarButtonItemStyleDone target:self action:@selector(finshMethod:)];
+    UIBarButtonItem *finishBtn = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"完成", @"Localizable", [CSBaseSetting cs_base_res_bundle], @"完成") style:UIBarButtonItemStyleDone target:self action:@selector(finshMethod:)];
     finishBtn.tintColor = [UIColor blackColor];
     defaultKBBtn.tintColor = [UIColor blackColor];
     

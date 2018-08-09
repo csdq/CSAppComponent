@@ -11,15 +11,14 @@
 #import "CSHelper.h"
 
 @class RACSubject;
-@class CSHTTPResponseModel;
 
 extern NSString *K_NETWORKTOOL_ARGUMENT_KEY_SOAP_XML;
 
 typedef enum : NSUInteger {
     CSHttpMethodGet,
     CSHttpMethodPost,
-    CSHttpMethodDelete,
-    CSHttpMethodPut
+    CSHttpMethodPut,
+    CSHttpMethodDelete
 } CSHttpMethod;
 
 typedef enum CSDataState{
@@ -28,7 +27,7 @@ typedef enum CSDataState{
     CSDataStateNomore
 }CSDataState;
 
-@interface CSRequestPage : NSObject
+@interface CSRequestPage : CSBaseModel
 CS_PROPERTY_DECLARE(NSNumber, pageIndex);
 CS_PROPERTY_DECLARE(NSNumber, pageSize);
 CS_PROPERTY_DECLARE(NSNumber, totalRecordCount);
@@ -47,7 +46,6 @@ CS_PROPERTY_DECLARE(NSNumber, nomoreData)
 typedef void(^CSHttpRequestCommonBlock)(id obj);
 @interface CSNetworkTool : NSObject
 {
-    NSURLSessionDataTask *_currentTask;
     //    请求URL
     NSString *_url;
     //    参数 字典形式
@@ -56,12 +54,16 @@ typedef void(^CSHttpRequestCommonBlock)(id obj);
     NSString *_soapArguments;
    
 }
+CS_PROPERTY_DECLARE(NSURLSessionDataTask, currentTask)
 CS_PROPERTY_ASSIGN_DECLARE(CSHttpMethod ,httpMethod)
 CS_PROPERTY_DECLARE(NSMutableURLRequest, request)
+CS_PROPERTY_ASSIGN_DECLARE(NSTimeInterval, requestTimeout)
 ///请求结果RACSubject
 CS_PROPERTY_DECLARE(RACSubject ,resultSubject);
 //创建实例
 + (instancetype)createInstance;
+///请求超时时间
+CS_LINKCODE_METHOD_ASSIGN(CSNetworkTool, NSTimeInterval, timeout)
 ///必要-设置url
 CS_LINKCODE_METHOD(CSNetworkTool, NSString, url)
 ///可选-参数

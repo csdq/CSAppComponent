@@ -43,8 +43,9 @@ fprintf(stderr, "-----------------------------------------\n\n");           \
 
 ///便捷宏方法 需要引用<Masonry/Masonry.h> 自动撑满控制器主视图
 #define CS_ADD_MAIN_VIEW_AND_FULLFILL(Main_View) \
-    ({[self.view addSubview:Main_View];\
+({@weakify(self);[self.view addSubview:Main_View];\
     [Main_View mas_makeConstraints:^(MASConstraintMaker *make) {\
+@strongify(self);\
     if(@available(iOS 11,*)){make.top.equalTo(self.view.mas_safeAreaLayoutGuideTop);\
         make.right.equalTo(self.view.mas_safeAreaLayoutGuideRight);\
         make.bottom.equalTo(self.view.mas_safeAreaLayoutGuideBottom);\

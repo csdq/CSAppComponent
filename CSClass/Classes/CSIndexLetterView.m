@@ -1,13 +1,13 @@
 //
-//  CSLetterIndexView.m
+//  CSIndexLetterView.m
 //  OA
 //
 //  Created by mr.s on 16/7/13.
 //  Copyright © 2016年 csdq. All rights reserved.
 //
 
-#import "CSLetterIndexView.h"
-@interface CSLetterIndexView()
+#import "CSIndexLetterView.h"
+@interface CSIndexLetterView()
 {
     UITableView *_tableView;
     CGPoint _currentPoint;
@@ -15,7 +15,7 @@
 }
 @end
 
-@implementation CSLetterIndexView
+@implementation CSIndexLetterView
 - (instancetype)init
 {
     self = [super init];

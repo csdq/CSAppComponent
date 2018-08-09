@@ -14,17 +14,17 @@
 #define CS_LC_METHOD(self_type,arg_type,method_name)\
 - (self_type * (^)(arg_type * value))method_name;
 #define CS_LC_METHOD_IMP(self_type,arg_type,method_name,code)\
-- (self_type * (^)(arg_type * value))method_name{typeof(self) wSelf _UU_ = self; return ^self_type * (arg_type * value){({code});return self;};}
+- (self_type * (^)(arg_type * value))method_name{@weakify(self);return ^self_type * (arg_type * value){@strongify(self);({code});return self;};}
 //
 #define CS_LC_METHOD_VOID(self_type,method_name)\
 - (self_type * (^)(void))method_name;
 #define CS_LC_METHOD_VOID_IMP(self_type,method_name,code)\
-- (self_type * (^)(void))method_name{typeof(self) wSelf _UU_ = self;return ^self_type * (void){({code});return self;};}
+- (self_type * (^)(void))method_name{@weakify(self);return ^self_type * (void){@strongify(self);({code});return self;};}
 //
 #define CS_LC_METHOD_ARG_ASSIGN(self_type,arg_type,method_name)\
 - (self_type * (^)(arg_type value))method_name;
 #define CS_LC_METHOD_IMP_ARG_ASSIGN(self_type,arg_type,method_name,code)\
-- (self_type * (^)(arg_type value))method_name{typeof(self) wSelf _UU_ = self;return ^self_type * (arg_type value){({code});return self;};}
+- (self_type * (^)(arg_type value))method_name{@weakify(self);return ^self_type * (arg_type value){@strongify(self);({code});return self;};}
 
 
 #endif /* CSLinkCode_h */

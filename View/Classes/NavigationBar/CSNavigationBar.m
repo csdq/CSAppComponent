@@ -114,7 +114,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
     _backBtn = ({
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.hidden = YES;
-        [btn setTitle:NSLocalizedStringFromTableInBundle(@"BackBtnTitle", @"Localizable", [CSBaseSetting cs_base_res_bundle], @"返回") forState:UIControlStateNormal];
+        [btn setTitle:NSLocalizedStringFromTableInBundle(@"返回", @"Localizable", [CSBaseSetting cs_base_res_bundle], @"返回") forState:UIControlStateNormal];
         UIImage *leftImg = [[UIImage imagePNGNamed:@"cs_base_nav_arrow_left" inBundle:[CSBaseSetting cs_base_res_bundle]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         [btn setImage:leftImg forState:UIControlStateNormal];
         [btn setImage:leftImg forState:UIControlStateHighlighted];

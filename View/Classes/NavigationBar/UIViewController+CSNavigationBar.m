@@ -27,7 +27,11 @@ const char * CS_Nav_Bar_Key = "CS_Nav_Bar_Key";
                 [self.navigationController popViewControllerAnimated:YES];
             }];
         }
-        objc_setAssociatedObject(self, CS_Nav_Bar_Key, navBar, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(self, CS_Nav_Bar_Key, navBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        [self.rac_willDeallocSignal subscribeCompleted:^{
+            @strongify(self)
+            objc_removeAssociatedObjects(self);
+        }];
         return navBar;
     }
 }
@@ -39,4 +43,12 @@ const char * CS_Nav_Bar_Key = "CS_Nav_Bar_Key";
 //
     
 }
+
+//- (void)dealloc{
+//    CSNavigationBar *navBar = self.cs_navigationBar;
+//    if(navBar){
+//        [navBar removeFromSuperview];
+//    }
+//    objc_removeAssociatedObjects(self);
+//}
 @end

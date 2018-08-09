@@ -32,7 +32,6 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
     method_exchangeImplementations(viewWillAppearMethod, newViewWillAppearMethod);
 }
 
-
 - (void)_cs_viewDidLoad{
     @weakify(self)
     [[RACObserve(self, title) takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
@@ -120,7 +119,7 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
     spin.hidesWhenStopped = YES;
     objc_setAssociatedObject(self, kCS_SPIN_VIEW_KEY, spin, OBJC_ASSOCIATION_RETAIN);
     @weakify(self)
-    [self.rac_willDeallocSignal subscribeNext:^(id x) {
+    [self.rac_willDeallocSignal subscribeCompleted:^{
         @strongify(self)
         objc_removeAssociatedObjects(self);
     }];

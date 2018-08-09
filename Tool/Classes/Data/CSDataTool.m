@@ -7,8 +7,73 @@
 
 #import "CSDataTool.h"
 #import "CSDataSecurity.h"
+@implementation CSDateWeek
+- (NSString *)startDateStr{
+    return [[CSDataTool sharedInstance].dateFormatterDate stringFromDate:self.startDate];
+}
+
+- (NSString *)startStrCh{
+    return [[CSDataTool sharedInstance].dateFormatterChinese stringFromDate:self.startDate];
+}
+
+- (NSString *)endDateStr{
+    return [[CSDataTool sharedInstance].dateFormatterDate stringFromDate:self.endDate];
+}
+
+- (NSString *)endStrCh{
+    return [[CSDataTool sharedInstance].dateFormatterChinese stringFromDate:self.endDate];
+}
+
++ (CSDateWeek *)getWeekObjWithDate:(NSDate *)date{
+    CSDateWeek *weekObj = [CSDateWeek new];
+    weekObj.date = date;
+    NSCalendar *cal = [CSDataTool sharedInstance].calender;
+    NSDate *startOfTheWeek;
+    NSDate *endOfWeek;
+    NSTimeInterval interval;
+    [cal rangeOfUnit:NSCalendarUnitWeekOfMonth
+           startDate:&startOfTheWeek
+            interval:&interval
+             forDate:date];
+    weekObj.indexOfWeekInMonth = [cal ordinalityOfUnit:NSCalendarUnitWeekday inUnit:NSCalendarUnitMonth forDate:startOfTheWeek];
+    endOfWeek = [startOfTheWeek dateByAddingTimeInterval:interval-1];
+    weekObj.startDate = startOfTheWeek;
+    weekObj.endDate = endOfWeek;
+    return weekObj;
+}
+
+- (CSDateWeek *)getNextWeekObj{
+    return [CSDateWeek getWeekObjWithDate:[self.startDate dateByAddingTimeInterval:7*24*3600]];
+}
+
+- (CSDateWeek *)getPreviousWeekObj{
+    return [CSDateWeek getWeekObjWithDate:[self.startDate dateByAddingTimeInterval:-7*24*3600]];
+}
+
+- (NSString *)description{
+    return [self objDescription];
+}
+
+- (NSString *)debugDescription{
+    return [self objDescription];
+}
+
+- (NSString *)objDescription{
+    return [NSString stringWithFormat:@"Week Object:\nStart Date:%@\nEnd Date%@",self.startDate,self.endDate];
+}
+@end
 
 @implementation CSDataTool
+static CSDataTool *_instance;
+
++ (instancetype)sharedInstance{
+    static dispatch_once_t oneToken;
+    dispatch_once(&oneToken, ^{
+        _instance = [[CSDataTool alloc] init];
+    });
+    return _instance;
+}
+
 + (BOOL)isCellPhoneNum:(NSString *)str{
     return [str length] == 11;
 }
@@ -50,7 +115,10 @@
 }
 
 + (BOOL)isMale:(NSString *)idCardNum{
-    NSAssert([self isIDCardNum:idCardNum], @"Invalid ID Card Num");
+//    NSAssert([self isIDCardNum:idCardNum], @"Invalid ID Card Num");
+    if(![self isIDCardNum:idCardNum]){
+        return NO;
+    }
     return [[idCardNum substringWithRange:NSMakeRange(16, 1)] integerValue] == 1;
 }
 
@@ -358,15 +426,16 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 + (NSString *)getAgeStrFromIDCardNum:(NSString *)idCard{
     NSString *resultAge = @"未知";
     NSDateComponents *dateCom = [self getAgeWithIDCardNum:idCard];
+    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"CSAppComponent" ofType:@"bundle"]];
     if(dateCom!=nil){
         if(dateCom.year==0){
             if(dateCom.month==0){
-                resultAge = [NSString stringWithFormat:@"%ld周",(long)dateCom.weekday];
+                resultAge = [NSString stringWithFormat:@"%ld%@",(long)dateCom.weekday,NSLocalizedStringFromTableInBundle(@"周", @"Localizable", bundle, @"周")];
             }else{
-                resultAge = [NSString stringWithFormat:@"%ld月",(long)dateCom.month];
+                resultAge = [NSString stringWithFormat:@"%ld%@",(long)dateCom.month,NSLocalizedStringFromTableInBundle(@"月", @"Localizable", bundle, @"月")];
             }
         }else{
-            resultAge = [NSString stringWithFormat:@"%ld岁",(long)dateCom.year];
+            resultAge = [NSString stringWithFormat:@"%ld%@",(long)dateCom.year,NSLocalizedStringFromTableInBundle(@"岁", @"Localizable",  bundle, @"岁")];
         }
     }
     return resultAge;
@@ -389,4 +458,50 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     size = [text boundingRectWithSize:maxSize options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
     return size;
 }
+
+/********/
+- (NSCalendar *)calender{
+    if(_calender == nil){
+        _calender = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierRepublicOfChina];
+        _calender.locale = [NSLocale localeWithLocaleIdentifier:@"zh_cn"];
+        _calender.timeZone = [NSTimeZone timeZoneWithName:@"GMT+8"];
+        _calender.firstWeekday = 2;
+    }
+    return _calender;
+}
+
+- (NSDateFormatter *)dateFormatterChinese{
+    if(_dateFormatterChinese == nil){
+        _dateFormatterChinese = [[NSDateFormatter alloc] init];
+        //        _dateFormatterChinese.calendar = self.calender;
+        _dateFormatterChinese.dateFormat = @"yyyy年M月d日";
+    }
+    return _dateFormatterChinese;
+}
+- (NSDateFormatter *)dateFormatterDate{
+    if(_dateFormatterDate == nil){
+        _dateFormatterDate = [[NSDateFormatter alloc] init];
+        //        _dateFormatterDate.calendar = self.calender;
+        _dateFormatterDate.dateFormat = @"yyyy-MM-dd";
+    }
+    return _dateFormatterDate;
+}
+- (NSDateFormatter *)dateFormatterDateTime{
+    if(_dateFormatterDateTime == nil){
+        _dateFormatterDateTime = [[NSDateFormatter alloc] init];
+        //        _dateFormatterDateTime.calendar = self.calender;
+        _dateFormatterDateTime.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+    }
+    return _dateFormatterDateTime;
+}
+
+- (NSDateFormatter *)dateFormatterReuse{
+    if(_dateFormatterReuse == nil){
+        _dateFormatterReuse = [[NSDateFormatter alloc] init];
+        //        _dateFormatterReuse.calendar = self.calender;
+        _dateFormatterReuse.locale = self.calender.locale;
+    }
+    return _dateFormatterReuse;
+}
+
 @end

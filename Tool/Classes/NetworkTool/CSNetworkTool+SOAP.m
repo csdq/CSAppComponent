@@ -10,7 +10,7 @@
 
 @implementation CSNetworkTool (SOAP)
 CS_LINKCODE_METHOD_IMP(CSNetworkTool, NSString, soapArguments, {
-    wSelf->_soapArguments = value;
+    self->_soapArguments = value;
 })
 
 - (RACSubject *(^)(void))rac_soapRequest{
@@ -34,7 +34,7 @@ CS_LINKCODE_METHOD_IMP(CSNetworkTool, NSString, soapArguments, {
         [request setHTTPBody:[soapMessage dataUsingEncoding:NSUTF8StringEncoding]];
         
         NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
-        NSURLSessionDataTask *task = [session dataTaskWithRequest:request
+        self.currentTask = [session dataTaskWithRequest:request
                                                 completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                                                     dispatch_async(dispatch_get_main_queue(), ^{
                                                         CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
@@ -45,7 +45,7 @@ CS_LINKCODE_METHOD_IMP(CSNetworkTool, NSString, soapArguments, {
                                                         [subject sendNext:model];
                                                     });
                                                 }];
-        [task resume];
+        [self.currentTask resume];
         return subject;
     };
 }

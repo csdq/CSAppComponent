@@ -8,7 +8,6 @@
 
 #import "CSNetworkTool.h"
 #import "AFNetworking.h"
-#import "CSHTTPResponseModel.h"
 #import "CSHTTPCommonResponseModel.h"
 #import "CSErrorDomain.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
@@ -19,11 +18,18 @@ NSString *K_NETWORKTOOL_ARGUMENT_KEY_SOAP_XML = @"K_NETWORKTOOL_ARGUMENT_KEY_SOA
 }
 
 + (instancetype)pageWith:(NSInteger)index size:(NSInteger)size{
-    CSRequestPage *page = [CSRequestPage new];
-    page.pageIndex = @(index);
-    page.pageSize = @(size);
-    return page;
+    return [[CSRequestPage alloc] initWithIndex:index size:size];
 }
+
+- (instancetype)initWithIndex:(NSInteger)index size:(NSInteger)size{
+    self = [super init];
+    if (self) {
+        self.pageSize = @(size);
+        self.pageIndex = @(index);
+    }
+    return self;
+}
+
 
 - (instancetype)init
 {
@@ -85,11 +91,14 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
 @end
 
 @implementation CSNetworkTool
-
-CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
-    [[NSMutableURLRequest alloc] init];
-})
-
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _requestTimeout = 60;
+    }
+    return self;
+}
 + (instancetype)shared{
     return [self createInstance];
 }
@@ -118,39 +127,57 @@ CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
 //MARK: 请求方法执行
 - (void)beginRequest{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.requestSerializer.timeoutInterval = self.requestTimeout;
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
+    NSLog(@"CSHTTP REQUEST\n%@%@",_url,_argument);
     switch (self.httpMethod) {
         case CSHttpMethodPost:
         {
-            _currentTask = [manager POST:_url parameters:_argument progress:^(NSProgress * _Nonnull uploadProgress) {
+            self.currentTask = [manager POST:_url parameters:_argument progress:^(NSProgress * _Nonnull uploadProgress) {
                 if(self.progressBlock){
                     self.progressBlock(uploadProgress);
                 }
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if(self.successBlock){
-                    self.successBlock(responseObject);
+                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
+                    model.task = task;
+                    model.iSuccess = YES;
+                    model.responseObject = responseObject;
+                    self.successBlock(model);
                 }
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 if(self.failBlock){
-                    self.failBlock(error);
+                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
+                    model.task = task;
+                    model.iSuccess = NO;
+                    model.responseObject = error;
+                    self.failBlock(model);
                 }
             }];
         }
             break;
         case CSHttpMethodGet:
         default:
-            _currentTask = [manager GET:_url parameters:_argument progress:^(NSProgress * _Nonnull downloadProgress) {
+            self.currentTask = [manager GET:_url parameters:_argument progress:^(NSProgress * _Nonnull downloadProgress) {
                 if(self.progressBlock){
                     self.progressBlock(downloadProgress);
                 }
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if(self.successBlock){
-                    self.successBlock(responseObject);
+                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
+                    model.task = task;
+                    model.iSuccess = YES;
+                    model.responseObject = responseObject;
+                    self.successBlock(model);
                 }
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 if(self.failBlock){
-                    self.failBlock(error);
+                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
+                    model.task = task;
+                    model.iSuccess = NO;
+                    model.responseObject = error;
+                    self.failBlock(model);
                 }
             }];
             break;
@@ -160,8 +187,9 @@ CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
 //MARK: 请求方法执行
 - (NSURLSessionDataTask *)cs_request_post{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.requestSerializer.timeoutInterval = self.requestTimeout;
     manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
+//    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
 //    manager.securityPolicy.allowInvalidCertificates = YES;
     NSLog(@"CSHTTP REQUEST\n%@%@",_url,_argument);
     return [manager POST:_url parameters:_argument progress:^(NSProgress * _Nonnull uploadProgress) {
@@ -171,21 +199,19 @@ CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"CSHTTP RESPONSE\n%@",responseObject);
         if(self.successBlock){
-            CSHTTPResponseModel *model = [CSHTTPResponseModel modelFromDict:responseObject];
-            if([CSErrorDomain isSuccess:model.status]){
-                self.successBlock(model);
-            }else{
-                if(self.failBlock){
-                    self.failBlock(model);
-                }
-            }
+            CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
+            model.task = task;
+            model.iSuccess = YES;
+            model.responseObject = responseObject;
+            self.successBlock(model);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"CSHTTP ERROR\n%@",error);
         if(self.failBlock){
-            CSHTTPResponseModel *model = [CSHTTPResponseModel new];
-            model.message = [error localizedFailureReason];
-            model.status = @(error.code);
+            CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
+            model.task = task;
+            model.iSuccess = YES;
+            model.responseObject = error;
             self.failBlock(model);
         }
     }];
@@ -193,6 +219,7 @@ CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
 
 - (NSURLSessionDataTask *)cs_request_get{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.requestSerializer.timeoutInterval = self.requestTimeout;
     manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
     return [manager GET:_url parameters:_argument progress:^(NSProgress * _Nonnull downloadProgress) {
         if(self.progressBlock){
@@ -201,70 +228,75 @@ CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"CSHTTP RESPONSE\n%@",responseObject);
         if(self.successBlock){
-            CSHTTPResponseModel *model = [CSHTTPResponseModel modelFromDict:responseObject];
-            if([CSErrorDomain isSuccess:model.status]){
-                self.successBlock(model);
-            }else{
-                if(self.failBlock){
-                    self.failBlock(model);
-                }
-            }
+            CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
+            model.task = task;
+            model.iSuccess = YES;
+            model.responseObject = responseObject;
+            self.successBlock(model);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"CSHTTP ERROR\n%@",error);
         if(self.failBlock){
-            CSHTTPResponseModel *model = [CSHTTPResponseModel new];
-            model.message = [error localizedFailureReason];
-            model.status = @(error.code);
+            CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
+            model.task = task;
+            model.iSuccess = YES;
+            model.responseObject = error;
             self.failBlock(model);
         }
     }];
 }
 
 - (void)cancelRequest{
-    [_currentTask cancel];
+    [self.currentTask cancel];
 }
 
+CS_PROPERTY_INIT_CODE(NSMutableURLRequest, request, {
+    [[NSMutableURLRequest alloc] init];
+})
+
 CS_LINKCODE_METHOD_IMP(CSNetworkTool, NSString, url, {
-    wSelf->_url = value;
+    self->_url = value;
 })
 
 CS_LINKCODE_METHOD_IMP(CSNetworkTool, NSDictionary, arguments, {
-    wSelf->_argument = value;
+    self->_argument = value;
 })
 
 CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, CSHttpMethod, method, {
-    wSelf->_httpMethod = value;
+    self->_httpMethod = value;
 })
 
 CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, CSHttpRequestCommonBlock, success, {
-    wSelf.successBlock = [value copy];
+    self.successBlock = [value copy];
 })
 
 CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, CSHttpRequestCommonBlock, fail, {
-    wSelf.failBlock = [value copy];
+    self.failBlock = [value copy];
 })
 
 CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, CSHttpRequestCommonBlock, progress, {
-    wSelf.progressBlock = [value copy];
+    self.progressBlock = [value copy];
 })
 
 CS_LINKCODE_METHOD_VOID_IMP(CSNetworkTool,begin,{
-    [wSelf beginRequest];
+    [self beginRequest];
 })
 
 CS_LINKCODE_METHOD_VOID_IMP(CSNetworkTool,cancel,{
-    [wSelf cancelRequest];
+    [self cancelRequest];
 })
 
 CS_LINKCODE_METHOD_VOID_IMP(CSNetworkTool,cs_post,{
-    wSelf.httpMethod = CSHttpMethodPost;
-    wSelf->_currentTask = [wSelf cs_request_post];
+    self.httpMethod = CSHttpMethodPost;
+    self.currentTask = [self cs_request_post];
 })
 
 CS_LINKCODE_METHOD_VOID_IMP(CSNetworkTool,cs_get,{
-    wSelf.httpMethod = CSHttpMethodGet;
-    wSelf->_currentTask = [wSelf cs_request_get];
+    self.httpMethod = CSHttpMethodGet;
+    self.currentTask = [self cs_request_get];
 })
 
+CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, NSTimeInterval, timeout, {
+    self.requestTimeout = value;
+})
 @end

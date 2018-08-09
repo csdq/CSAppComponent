@@ -9,13 +9,5 @@
 #import "CSBaseViewModel.h"
 
 @implementation CSBaseViewModel
-+ (instancetype)alloc{
-    CSBaseViewModel *model = [super alloc];
-    [model cs_setViewModel];
-    return model;
-}
 
-- (void)cs_setViewModel{
-    
-}
 @end

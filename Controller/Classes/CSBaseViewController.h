@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "UIViewController+CSCustom.h"
 @interface CSBaseViewController : UIViewController<CSBaseViewControllerProtocol>
-
+- (void)cs_addMainView:(UIView *)mainView;
 @end

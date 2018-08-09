@@ -11,6 +11,7 @@
 #import "CSBaseViewModel.h"
 @interface CSBaseView : UIView
 @property (nonatomic,strong) CSBaseViewModel *viewModel;
+@property (nonatomic,assign) BOOL isViewActive;
 - (instancetype)initWithViewModel:(CSBaseViewModel *)model;
 - (instancetype)init NS_UNAVAILABLE;
 - (void)cs_setView;

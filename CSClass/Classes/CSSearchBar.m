@@ -9,24 +9,32 @@
 #import "CSSearchBar.h"
 @interface CSSearchBar()<UITextFieldDelegate>
 {
+    ///搜索输入框
     UITextField *_searchTF;
+    ///取消搜索按钮
     UIButton *_cancelBtn;
+    ///取消按钮宽度
     NSLayoutConstraint *_cancleBtnWidth;
+    ///搜索输入框右边边距
     NSLayoutConstraint *_searchTextRightMargin;
 }
-@property (nonatomic , strong) UIImage *leftImg;
+
 @end
 
 @implementation CSSearchBar
 - (void)awakeFromNib{
     [super awakeFromNib];
-    [self setSubViews];
+     if(!_searchTF){
+        [self setSubViews];
+     }
 }
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        [self setSubViews];
+        if(!_searchTF){
+            [self setSubViews];
+        }
     }
     return self;
 }
@@ -35,7 +43,9 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setSubViews];
+         if(!_searchTF){
+            [self setSubViews];
+         }
     }
     return self;
 }
@@ -55,34 +65,32 @@
     _searchTF.backgroundColor = [UIColor whiteColor];
     _searchTF.returnKeyType = UIReturnKeySearch;
     _searchTF.clearButtonMode = UITextFieldViewModeWhileEditing;
-    _searchTF.rightViewMode = UITextFieldViewModeWhileEditing;
+    _searchTF.translatesAutoresizingMaskIntoConstraints = NO;
+//    _searchTF.rightViewMode = UITextFieldViewModeWhileEditing;
    
     _cancelBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     _cancelBtn.layer.borderColor = [UIColor whiteColor].CGColor;
     _cancelBtn.layer.borderWidth = 1;
     _cancelBtn.clipsToBounds = YES;
     _cancelBtn.layer.cornerRadius = 4;
-    _searchTF.translatesAutoresizingMaskIntoConstraints = NO;
-//    _cancelBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [_cancelBtn setTitle:NSLocalizedStringFromTableInBundle(@"CancelBtnTitle", @"Localizable", [self resBundle], @"取消") forState:UIControlStateNormal];
+    _cancelBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [_cancelBtn setTitle:NSLocalizedStringFromTableInBundle(@"取消", @"Localizable", [self resBundle], @"取消") forState:UIControlStateNormal];
     _cancelBtn.backgroundColor = self.tintColor;
     [_cancelBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _cancelBtn.titleLabel.font = [UIFont systemFontOfSize:14.0f];
     [_cancelBtn addTarget:self action:@selector(endSearch) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_searchTF];
-     _searchTF.rightView = _cancelBtn;
-//    [self addSubview:_cancelBtn];
+    [self addSubview:_cancelBtn];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_searchTF]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_searchTF)]];
-//    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_cancelBtn]-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_cancelBtn)]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_cancelBtn]-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_cancelBtn)]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-6-[_searchTF]-6-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_searchTF)]];
-//    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-6-[_cancelBtn]-6-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_cancelBtn)]];
-//    _cancleBtnWidth = [NSLayoutConstraint constraintWithItem:_cancelBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeWidth multiplier:0 constant:0];
-    _searchTextRightMargin = [NSLayoutConstraint constraintWithItem:_searchTF attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:-16.0];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-6-[_cancelBtn]-6-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_cancelBtn)]];
+    _cancleBtnWidth = [NSLayoutConstraint constraintWithItem:_cancelBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:-8];
+    [_cancelBtn addConstraint:_cancleBtnWidth];
+    _searchTextRightMargin = [NSLayoutConstraint constraintWithItem:_searchTF attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:-8];
     [self addConstraints:@[_searchTextRightMargin]];
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"CSBase" ofType:@"bundle"]];
-    self.leftImg = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"common_search" ofType:@"png"]];
-    
+    self.leftImg = [UIImage imageWithContentsOfFile:[[self resBundle] pathForResource:@"common_search" ofType:@"png"]];
 //    [[_searchTF rac_valuesAndChangesForKeyPath:@"text" options:NSKeyValueObservingOptionNew observer:self] subscribeNext:^(RACTuple* x) {
 //        if([_delegate respondsToSelector:@selector(searchBar:textDidChange:)]){
 //            [_delegate searchBar:self textDidChange:[x.allObjects firstObject]];
@@ -90,6 +98,7 @@
 //    }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTextFieldDidChangeNotification:) name:UITextFieldTextDidChangeNotification object:nil];
+    self.showsCancelButton = NO;
 }
 
 - (void)cs_becomeFirstResponder{
@@ -100,11 +109,6 @@
     return [_searchTF canBecomeFirstResponder];
 }
 
-- (void)layoutSubviews{
-    [super layoutSubviews];
-     self->_cancelBtn.frame = CGRectMake(0, 0, 64, self->_searchTF.frame.size.height);
-}
-
 - (void)handleTextFieldDidChangeNotification:(NSNotification *)noti{
     if([noti.object isEqual:_searchTF] && [_delegate respondsToSelector:@selector(searchBar:textDidChange:)]){
         [_delegate searchBar:self textDidChange:[((UITextField *)noti.object) text]];
@@ -113,10 +117,13 @@
 
 - (void)setLeftImg:(UIImage *)leftImg{
     _leftImg = leftImg;
-    UIImageView *imgView = [[UIImageView alloc] initWithFrame:(CGRect){0,0,24,24}];
+    UIView *leftView = [[UIView alloc] initWithFrame:(CGRect){0,0,30,30}];
+    leftView.backgroundColor = [UIColor clearColor];
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:(CGRect){6,0,24,30}];
     imgView.contentMode = UIViewContentModeScaleAspectFit;
     imgView.image = _leftImg;
-    _searchTF.leftView = imgView;
+    [leftView addSubview:imgView];
+    _searchTF.leftView = leftView;
     _searchTF.leftViewMode = UITextFieldViewModeAlways;
 }
 
@@ -134,15 +141,17 @@
 
 - (void)setShowsCancelButton:(BOOL)showsCancelButton{
     _showsCancelButton = showsCancelButton;
-//    if(self->_showsCancelButton){
-////        self->_cancleBtnWidth.constant = 60;
-//        self->_searchTextRightMargin.constant = -84;
-//    }else{
-////        self->_cancleBtnWidth.constant = 0;
-//        self->_searchTextRightMargin.constant = -16;
-//    }
+    if(self->_showsCancelButton){
+        self->_cancleBtnWidth.constant = 64;
+        self->_searchTextRightMargin.constant = -80;
+    }else{
+        self->_cancleBtnWidth.constant = 0;
+        self->_searchTextRightMargin.constant = -8;
+    }
+    self->_cancelBtn.hidden = !self->_showsCancelButton;
     [UIView animateWithDuration:0.3 animations:^{
-        [self updateConstraints];
+        [self->_searchTF setNeedsLayout];
+        [self setNeedsLayout];
     }];
 }
 

@@ -15,6 +15,7 @@
     return ^{
         RACSubject *subject = self.resultSubject;
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        manager.requestSerializer.timeoutInterval = self.requestTimeout;
         manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
         manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"application/json"];
         manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text-plain/json"];
@@ -22,7 +23,7 @@
         switch (self.httpMethod) {
             case CSHttpMethodGet:
             {
-                self->_currentTask = [manager GET:self->_url parameters:self->_argument progress:^(NSProgress * _Nonnull uploadProgress) {
+                self.currentTask = [manager GET:self->_url parameters:self->_argument progress:^(NSProgress * _Nonnull uploadProgress) {
                     //                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     //                    model.progress = uploadProgress;
                     //                    model.iSuccess = YES;
@@ -34,18 +35,14 @@
                     model.responseObject = responseObject;
                     [subject sendNext:model];
                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
-                    model.task = task;
-                    model.iSuccess = NO;
-                    model.error = error;
-                    [subject sendNext:model];
+                    [subject sendError:error];
                 }];
             }
                 break;
             case CSHttpMethodPost:
             default:
             {
-                self->_currentTask = [manager POST:self->_url parameters:self->_argument progress:^(NSProgress * _Nonnull uploadProgress) {
+                self.currentTask = [manager POST:self->_url parameters:self->_argument progress:^(NSProgress * _Nonnull uploadProgress) {
                     //                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     //                    model.progress = uploadProgress;
                     //                    model.iSuccess = YES;
@@ -57,11 +54,7 @@
                     model.iSuccess = YES;
                     [subject sendNext:model];
                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                    CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
-                    model.task = task;
-                    model.iSuccess = NO;
-                    model.error = error;
-                    [subject sendNext:model];
+                    [subject sendError:error];
                 }];
             }
                 break;
@@ -75,6 +68,7 @@
     return ^{
         RACSubject *subject = self.resultSubject;
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        manager.requestSerializer.timeoutInterval = self.requestTimeout;
         manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"application/xml"];
         manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/xml"];
         switch (self.httpMethod) {
@@ -91,7 +85,7 @@
                 [request setHTTPBody:[soapXML dataUsingEncoding:NSUTF8StringEncoding]];
                 
                 NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
-                self->_currentTask = [session dataTaskWithRequest:request
+                self.currentTask = [session dataTaskWithRequest:request
                                                 completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                                                     if(error) {
                                                         if(error.code == NSURLErrorCancelled) {
@@ -110,7 +104,7 @@
                                                         [subject sendNext:pareser];
                                                     }
                                                 }];
-                [self->_currentTask resume];
+                [self.currentTask resume];
             }
                 break;
         }

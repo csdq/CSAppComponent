@@ -13,19 +13,45 @@
 {
     NSURLRequest *_request;
     NSURL *_baseURL;
+    dispatch_semaphore_t _semaphore;
 }
-@property (nonatomic,strong) WKWebView * webView;
 @end
 
 @implementation CSWebViewController
-
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _semaphore = dispatch_semaphore_create(1);
+    dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
+    [self setView];
 }
 
-- (void)cs_setView{
-    [super cs_setView];
-    CS_ADD_MAIN_VIEW_AND_FULLFILL(self.webView)
+- (void)dealloc{
+    _webView.UIDelegate = self;
+    _webView.navigationDelegate = self;
+    [_webView removeFromSuperview];
+    _webView = nil;
+    _request = nil;
+    _baseURL = nil;
+    _webSubject = nil;
+    _webJSCmd = nil;
+}
+
+- (void)setView{
+    WKWebView *mainView = self.webView;
+    mainView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:mainView];
+    if (@available(iOS 11,*)){
+        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        [NSLayoutConstraint activateConstraints:@[top, bottom, left, right]];
+    }else{
+        id<UILayoutSupport> top = self.topLayoutGuide;
+        id<UILayoutSupport> bottom = self.bottomLayoutGuide;
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mainView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(mainView)]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[top]-0-[mainView]-0-[bottom]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(mainView,top,bottom)]];
+    }
 }
 
 - (WKWebView *)webView{
@@ -44,14 +70,25 @@
         _webJSCmd = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
             return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
                 @strongify(self)
-                if([input isKindOfClass:[NSString class]]){
-                    [self.webView evaluateJavaScript:input completionHandler:^(id _Nullable obj, NSError * _Nullable error) {
-                        @strongify(self)
-                        [self.webJSResultSubject sendNext:obj];
-                    }];
-                }else{
-                    NSLog(@"input should javascript string");
-                }
+                @weakify(self)
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                    dispatch_semaphore_wait(self->_semaphore, DISPATCH_TIME_FOREVER);
+                    if([input isKindOfClass:[NSString class]]){
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.webView evaluateJavaScript:input completionHandler:^(id _Nullable obj, NSError * _Nullable error) {
+                                @strongify(self)
+                                if(error && error.code!=0){
+                                    [self.webJSResultSubject sendNext:error];
+                                }else{
+                                    [self.webJSResultSubject sendNext:obj];
+                                }
+                            }];
+                        });
+                    }else{
+                        NSLog(@"input should javascript string");
+                    }
+                    dispatch_semaphore_signal(_semaphore);
+                });
                 return nil;
             }];
         }];
@@ -66,7 +103,6 @@
 
 //MARK: delegate - navigation
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
-    [self showLoadState];
     decisionHandler(WKNavigationActionPolicyAllow);
     NSLog(@"decidePolicyForNavigationAction");
 }
@@ -94,8 +130,8 @@
 }
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation{
-    [self hideLoadState];
     NSLog(@"didFinishNavigation");
+    dispatch_semaphore_signal(_semaphore);
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error;{
@@ -103,7 +139,7 @@
 }
 
 - (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler{
-    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling,nil);
+    completionHandler(NSURLSessionAuthChallengeUseCredential,[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
     NSLog(@"didReceiveAuthenticationChallenge");
 }
 
@@ -114,7 +150,7 @@
 //MARK: delegate - UI
 - (nullable WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
     NSLog(@"createWebViewWithConfiguration");
-    return webView;
+    return nil;
 }
 
 - (void)webViewDidClose:(WKWebView *)webView API_AVAILABLE(macosx(10.11), ios(9.0)){
@@ -123,7 +159,7 @@
 
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
     completionHandler();
-    NSLog(@"runJavaScriptAlertPanelWithMessage");
+    NSLog(@"runJavaScriptAlertPanelWithMessage %@",message);
 }
 
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
@@ -153,21 +189,21 @@
 }
 //MARK:
 CS_LINKCODE_METHOD_IMP(CSWebViewController, NSURL, loadURL, {
-    if([value.absoluteString hasPrefix:@"http"] || [value.absoluteString hasPrefix:@"file"] || [value.absoluteString hasPrefix:@"ftp"]){
-        wSelf->_request = [NSURLRequest requestWithURL:value];
+    if([value.absoluteString hasPrefix:@"http:"] || [value.absoluteString hasPrefix:@"https"] || [value.absoluteString hasPrefix:@"file:"] || [value.absoluteString hasPrefix:@"ftp:"]){
+        self->_request = [NSURLRequest requestWithURL:value];
     }else{
-        wSelf->_request = [NSURLRequest requestWithURL:[NSURL URLWithString:[wSelf->_baseURL.absoluteString stringByAppendingString:value.absoluteString]]];
+        self->_request = [NSURLRequest requestWithURL:[NSURL URLWithString:[self->_baseURL.absoluteString stringByAppendingString:value.absoluteString]]];
     }
-    NSLog(@"%@",wSelf->_request.URL);
-    [wSelf.webView loadRequest:wSelf->_request];
+    NSLog(@"%@",self->_request.URL);
+    [self.webView loadRequest:self->_request];
 })
 
 CS_LINKCODE_METHOD_IMP(CSWebViewController, NSString, loadHTML, {
-    [wSelf.webView loadHTMLString:value baseURL:wSelf->_baseURL];
+    [self.webView loadHTMLString:value baseURL:self->_baseURL];
 })
 
 CS_LINKCODE_METHOD_IMP(CSWebViewController, NSURL, baseURL, {
-    wSelf->_baseURL = value;
+    self->_baseURL = value;
 })
 
 CS_PROPERTY_INIT_CODE(RACSubject, webSubject, {

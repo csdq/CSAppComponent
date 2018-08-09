@@ -1,3 +1,9 @@
-"BackBtnTitle"="Back";
-"FinishBtnTitle"="Finish";
-"CancelBtnTitle"="Cancel";
+"返回"="Back";
+"完成"="Finish";
+"取消"="Cancel";
+"岁"="Year(s) Old";
+"月"="Month(s) Old";
+"周"="Week(s) Old";
+"性别"="Gender";
+"男"="Male";
+"女"="Female";

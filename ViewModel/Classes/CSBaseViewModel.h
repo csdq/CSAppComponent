@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface CSBaseViewModel : NSObject
-- (void)cs_setViewModel;
+
 @end
