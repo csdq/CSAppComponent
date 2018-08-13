@@ -15,22 +15,23 @@ PODS:
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
   - CocoaAsyncSocket (7.6.3)
-  - CSAppComponent (1.0.4):
+  - CSAppComponent (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
-    - CSAppComponent/Category (= 1.0.4)
-    - CSAppComponent/Controller (= 1.0.4)
-    - CSAppComponent/CSClass (= 1.0.4)
-    - CSAppComponent/Helper (= 1.0.4)
-    - CSAppComponent/Model (= 1.0.4)
-    - CSAppComponent/Setting (= 1.0.4)
-    - CSAppComponent/Tool (= 1.0.4)
-    - CSAppComponent/View (= 1.0.4)
-    - CSAppComponent/ViewModel (= 1.0.4)
+    - CSAppComponent/Category (= 1.0.5)
+    - CSAppComponent/Controller (= 1.0.5)
+    - CSAppComponent/CSClass (= 1.0.5)
+    - CSAppComponent/File (= 1.0.5)
+    - CSAppComponent/Helper (= 1.0.5)
+    - CSAppComponent/Model (= 1.0.5)
+    - CSAppComponent/Setting (= 1.0.5)
+    - CSAppComponent/Tool (= 1.0.5)
+    - CSAppComponent/View (= 1.0.5)
+    - CSAppComponent/ViewModel (= 1.0.5)
     - MJRefresh (~> 3.1.15.3)
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Category (1.0.4):
+  - CSAppComponent/Category (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
     - CSAppComponent/Setting
@@ -38,7 +39,7 @@ PODS:
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Controller (1.0.4):
+  - CSAppComponent/Controller (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/Category
     - CSAppComponent/CSClass
@@ -51,21 +52,29 @@ PODS:
     - QBImagePickerController
     - ReactiveCocoa (~> 2.5.0)
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/CSClass (1.0.4):
+  - CSAppComponent/CSClass (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSDataModel (~> 1.0.0)
     - MJRefresh (~> 3.1.15.3)
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Helper (1.0.4):
+  - CSAppComponent/File (1.0.5):
+    - CocoaAsyncSocket (~> 7.6.2)
+    - CSAppComponent/Tool
+    - CSDataModel (~> 1.0.0)
+    - MJRefresh (~> 3.1.15.3)
+    - ProgressHUD (~> 2.51)
+    - QBImagePickerController
+    - SDWebImage (~> 4.3.3)
+  - CSAppComponent/Helper (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
     - MJRefresh (~> 3.1.15.3)
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Model (1.0.4):
+  - CSAppComponent/Model (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
     - CSAppComponent/Helper
@@ -74,7 +83,7 @@ PODS:
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Setting (1.0.4):
+  - CSAppComponent/Setting (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
     - CSDataModel (~> 1.0.0)
@@ -82,7 +91,7 @@ PODS:
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Tool (1.0.4):
+  - CSAppComponent/Tool (1.0.5):
     - AFNetworking (~> 3.0)
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
@@ -95,7 +104,7 @@ PODS:
     - QBImagePickerController
     - ReactiveCocoa (~> 2.5.0)
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/View (1.0.4):
+  - CSAppComponent/View (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/Category
     - CSAppComponent/CSClass
@@ -108,7 +117,7 @@ PODS:
     - QBImagePickerController
     - ReactiveCocoa (~> 2.5.0)
     - SDWebImage (~> 4.3.3)
-  - CSAppComponent/ViewModel (1.0.4):
+  - CSAppComponent/ViewModel (1.0.5):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
     - MJRefresh (~> 3.1.15.3)
@@ -153,7 +162,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
-  CSAppComponent: f9bc2ef0e645f38c87d5257b34bc4a5b2aa4b270
+  CSAppComponent: ebedc8a5b3872bb2fee4a7767525cddd3e5d4e63
   CSDataModel: 91cbb6297395681141c66f1dba59a96eb9a500e4
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MJRefresh: b48380ae2b927b46c4ef000de9adb8dc748e1df7

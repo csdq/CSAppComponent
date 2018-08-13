@@ -66,6 +66,19 @@
     NSLog(@"RSA : %@\n\n%@", result,[CSDataTool rsaDecryption:result prikey:priKey]);
     result = [CSDataTool rsaEncryption:@"I also know" prikey:priKey];
     NSLog(@"RSA : %@\n\n%@", result,[CSDataTool rsaDecryption:result pubkey:pubKey]);
+    
+    
+     CSFile *file = [CSFile new];
+     file.source = [NSURL URLWithString:@"https://tse3.mm.bing.net/th?id=OIP.YQKrYCL2Rdl02XeZgKjGcgHaE7&pid=Api"];
+    file.fileName = @"一张图片片.png";
+     [CSFileManager downloadFile:file progress:^(CGFloat percent) {
+         [ProgressHUD showSuccess:[NSString stringWithFormat:@"%.2f",percent]];
+    } completed:^(CSFile *file) {
+        NSLog(@"%@ %@ %@ %@",file.fileName,file.fileSizeText,file.creationDate,file.modicationDate);
+        [CSFileManager deleteFile:file];
+    } failed:^(NSError *error) {
+        
+    }];
 }
 
 - (void)change{

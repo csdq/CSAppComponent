@@ -30,9 +30,6 @@ typedef enum CSDataState{
 @interface CSRequestPage : CSBaseModel
 CS_PROPERTY_DECLARE(NSNumber, pageIndex);
 CS_PROPERTY_DECLARE(NSNumber, pageSize);
-CS_PROPERTY_DECLARE(NSNumber, totalRecordCount);
-CS_PROPERTY_DECLARE(NSNumber, totalPageCount)
-CS_PROPERTY_DECLARE(NSNumber, nomoreData)
 ///状态
 @property (nonatomic , assign) CSDataState state;
 + (instancetype)page;

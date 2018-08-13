@@ -24,7 +24,7 @@ CS_LINKCODE_METHOD(CSWebViewController, NSString, loadHTML)
 
 /********非实时执行JS******/
 //input 参数 js
-CS_PROPERTY_DECLARE(RACCommand, webJSCmd);
+- (void)runJavascript:(NSString *)js identifier:(NSString *)identifier;
 ///js调用结果
 CS_PROPERTY_DECLARE(RACSubject, webJSResultSubject);
 /**************/

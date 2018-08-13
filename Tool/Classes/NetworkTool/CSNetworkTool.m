@@ -58,20 +58,16 @@ NSString *K_NETWORKTOOL_ARGUMENT_KEY_SOAP_XML = @"K_NETWORKTOOL_ARGUMENT_KEY_SOA
 
 - (instancetype)add{
     @synchronized(self){
-        _pageIndex = @([_pageIndex integerValue] + 1);
+        self.pageIndex = @([_pageIndex integerValue] + 1);
     }
     return self;
 }
 
 - (instancetype)subtract{
     @synchronized(self){
-        _pageIndex = @(MAX(0,[_pageIndex integerValue] - 1));
+        self.pageIndex = @(MAX(0,[_pageIndex integerValue] - 1));
     }
     return self;
-}
-
-- (NSNumber *)nomoreData{
-    return @([self.totalPageCount isEqualToNumber:self.pageIndex]);
 }
 
 - (NSString *)description{

@@ -14,12 +14,15 @@
     NSURLRequest *_request;
     NSURL *_baseURL;
     dispatch_semaphore_t _semaphore;
+    NSLock *_webJSCmdlock;
 }
+@property (nonatomic,strong) RACCommand * webJSCmd;
 @end
 
 @implementation CSWebViewController
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _webJSCmdlock = [[NSLock alloc] init];
     _semaphore = dispatch_semaphore_create(1);
     dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
     [self setView];
@@ -34,6 +37,22 @@
     _baseURL = nil;
     _webSubject = nil;
     _webJSCmd = nil;
+    _webJSCmdlock = nil;
+}
+
+- (void)runJavascript:(NSString *)js identifier:(NSString *)identifier{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0), ^{
+        [_webJSCmdlock lock];
+        [self.webJSCmd execute:@{@"js":[self jsStringWithoutWhite:js],@"id":identifier}];
+    });
+}
+
+- (NSString *)jsStringWithoutWhite:(NSString *)js{
+    NSString *_js = [js stringByReplacingOccurrencesOfString:@" " withString:@""];
+    [_js stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+    [_js stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    [_js stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return _js;
 }
 
 - (void)setView{
@@ -73,20 +92,22 @@
                 @weakify(self)
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
                     dispatch_semaphore_wait(self->_semaphore, DISPATCH_TIME_FOREVER);
-                    if([input isKindOfClass:[NSString class]]){
+                    if([input isKindOfClass:[NSDictionary class]] && [input[@"js"] isKindOfClass:[NSString class]]){
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.webView evaluateJavaScript:input completionHandler:^(id _Nullable obj, NSError * _Nullable error) {
+                            [self.webView evaluateJavaScript:input[@"js"] completionHandler:^(id _Nullable obj, NSError * _Nullable error) {
                                 @strongify(self)
                                 if(error && error.code!=0){
-                                    [self.webJSResultSubject sendNext:error];
+                                    [self.webJSResultSubject sendError:error];
                                 }else{
-                                    [self.webJSResultSubject sendNext:obj];
+                                    [self.webJSResultSubject sendNext:input[@"id"]];
                                 }
                             }];
                         });
                     }else{
                         NSLog(@"input should javascript string");
                     }
+                    [self->_webJSCmdlock unlock];
+                    [subscriber sendCompleted];
                     dispatch_semaphore_signal(_semaphore);
                 });
                 return nil;
@@ -150,6 +171,9 @@
 //MARK: delegate - UI
 - (nullable WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
     NSLog(@"createWebViewWithConfiguration");
+    if (!navigationAction.targetFrame.isMainFrame) {
+        [self.webView loadRequest:navigationAction.request];
+    }
     return nil;
 }
 

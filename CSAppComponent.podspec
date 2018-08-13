@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.5'
+    s.version          = '1.0.6'
     s.summary          = '集成封装了常用库和基类'
     
     # This description is used to generate tags and improve search results.
@@ -24,6 +24,7 @@ Pod::Spec.new do |s|
     v1.0.3 自定义导航栏优化
     v1.0.4 增加通讯录索引字母栏 & CS_ADD_VIEW_AND_FULLFILL宏定义修改
     v1.0.5 修复内存泄漏和其他bug
+    v1.0.6 增加文件下载和删除功能
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'
@@ -111,6 +112,13 @@ Pod::Spec.new do |s|
         ss.source_files = 'ViewModel/Classes/**/*'
         ss.public_header_files = 'ViewModel/Classes/**/*.h'
         ss.dependency 'CSAppComponent/CSClass'
+    end
+    # File
+    s.subspec 'File' do |ss|
+        ss.source_files = 'File/Classes/**/*'
+        ss.public_header_files = 'File/Classes/**/*.h'
+        ss.dependency 'CSDataModel', '~> 1.0.0'
+        ss.dependency 'CSAppComponent/Tool'
     end
     
     s.resource_bundles = {
