@@ -13,6 +13,7 @@
 @implementation CSNetworkTool (RAC_Request)
 - (RACSubject *(^)(void))rac_request{
     return ^{
+        NSLog(@"URL: %@\nArguments:%@",self->_url,self->_argument);
         RACSubject *subject = self.resultSubject;
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         manager.requestSerializer.timeoutInterval = self.requestTimeout;
@@ -29,6 +30,7 @@
                     //                    model.iSuccess = YES;
                     //                    [subject sendNext:model];
                 } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                    NSLog(@"Response:\n%@",responseObject);
                     CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     model.task = task;
                     model.iSuccess = YES;

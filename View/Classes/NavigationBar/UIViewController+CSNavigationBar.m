@@ -22,11 +22,11 @@ const char * CS_Nav_Bar_Key = "CS_Nav_Bar_Key";
         if(![self hideBackButton]){
             ///返回按钮显示 并且绑定事件
             navBar.backBtn.hidden = NO;
-            [navBar.backBtnTouchInsideSubject subscribeNext:^(id x) {
-                @strongify(self)
-                [self.navigationController popViewControllerAnimated:YES];
-            }];
         }
+        [navBar.backBtnTouchInsideSubject subscribeNext:^(id x) {
+            @strongify(self)
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
         objc_setAssociatedObject(self, CS_Nav_Bar_Key, navBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [self.rac_willDeallocSignal subscribeCompleted:^{
             @strongify(self)

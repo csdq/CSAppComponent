@@ -9,6 +9,7 @@
 #define KEY_WINDOW  [[UIApplication sharedApplication]keyWindow]
 
 #import "CSNavViewController.h"
+#import "UIViewController+CSCustom.h"
 #import <QuartzCore/QuartzCore.h>
 
 static CGFloat screenWidth ;
@@ -279,10 +280,19 @@ static CGFloat screenWidth ;
 }
 
 - (void)willShow:(UIViewController *)vc{
-    
+    if([vc respondsToSelector:@selector(cs_navigationBar)] && vc.cs_navigationBar.backBtn.hidden){
+        vc.cs_navigationBar.backBtn.hidden = [self showHideBackBtn:vc];
+    }
 }
 
 - (void)didShow:(UIViewController *)vc{
     
 }
+
+- (BOOL)showHideBackBtn:(UIViewController *)vc{
+    return (!vc.navigationController)
+    ||[self.viewControllers indexOfObject:vc] == 0
+    ||(vc.parentViewController && (![vc.parentViewController isKindOfClass:[UINavigationController class]] && [self.viewControllers indexOfObject:vc.parentViewController]==0));
+}
+         
 @end
