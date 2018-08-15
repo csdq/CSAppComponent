@@ -54,7 +54,7 @@ PODS:
     - SDWebImage (~> 4.3.3)
   - CSAppComponent/CSClass (1.0.6):
     - CocoaAsyncSocket (~> 7.6.2)
-    - CSDataModel (~> 1.0.0)
+    - CSDataModel (>= 1.1.1)
     - MJRefresh (~> 3.1.15.3)
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
@@ -62,7 +62,7 @@ PODS:
   - CSAppComponent/File (1.0.6):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/Tool
-    - CSDataModel (~> 1.0.0)
+    - CSDataModel (>= 1.1.1)
     - MJRefresh (~> 3.1.15.3)
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
@@ -78,7 +78,7 @@ PODS:
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
     - CSAppComponent/Helper
-    - CSDataModel (~> 1.0.0)
+    - CSDataModel (>= 1.1.1)
     - MJRefresh (~> 3.1.15.3)
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
@@ -86,7 +86,7 @@ PODS:
   - CSAppComponent/Setting (1.0.6):
     - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
-    - CSDataModel (~> 1.0.0)
+    - CSDataModel (>= 1.1.1)
     - MJRefresh (~> 3.1.15.3)
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
@@ -98,7 +98,7 @@ PODS:
     - CSAppComponent/Helper
     - CSAppComponent/Model
     - CSAppComponent/Setting
-    - CSDataModel (~> 1.0.0)
+    - CSDataModel (>= 1.1.1)
     - MJRefresh (~> 3.1.15.3)
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
@@ -124,7 +124,7 @@ PODS:
     - ProgressHUD (~> 2.51)
     - QBImagePickerController
     - SDWebImage (~> 4.3.3)
-  - CSDataModel (1.0.0)
+  - CSDataModel (1.1.1)
   - Masonry (1.1.0)
   - MJRefresh (3.1.15.3)
   - ProgressHUD (2.51)
@@ -162,8 +162,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
-  CSAppComponent: fe60e323993fec8ea5b2cbf34d0377117ff8b3af
-  CSDataModel: 91cbb6297395681141c66f1dba59a96eb9a500e4
+  CSAppComponent: 48a76ea8fbde5e82614133914b6f4a2c73c0911b
+  CSDataModel: 7afcc8bd31fefe98703f03005d68ffac684d9c06
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MJRefresh: b48380ae2b927b46c4ef000de9adb8dc748e1df7
   ProgressHUD: 54b4c2fa202bf3da7dddc1c698ae4e6376333bd9
