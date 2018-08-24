@@ -94,6 +94,10 @@ static CGFloat screenWidth ;
 }
 
 - (void)dealloc{
+    if(self->_mainRecognizer){
+        [self.view removeGestureRecognizer:self->_mainRecognizer];
+        self->_mainRecognizer = nil;
+    }
     self.screenShotsList = nil;
     [self.backgroundView removeFromSuperview];
     self.backgroundView = nil;
@@ -107,9 +111,12 @@ static CGFloat screenWidth ;
     shadowImageView.frame = CGRectMake(-8, 0, 8, self.view.frame.size.height);
     [self.view addSubview:shadowImageView];
     self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
-    __weak CSNavViewController *bSelf = self;
-    [self.view.gestureRecognizers enumerateObjectsUsingBlock:^(__kindof UIGestureRecognizer * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [bSelf.view removeGestureRecognizer:obj];
+//    __weak CSNavViewController *bSelf = self;
+    NSArray<UIGestureRecognizer *> *oldGes = [self.view.gestureRecognizers copy];
+    
+    [oldGes enumerateObjectsUsingBlock:^(UIGestureRecognizer *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        obj.enabled = NO;
+//        [self.view removeGestureRecognizer:obj];
     }];
     _mainRecognizer = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self
                                                                                 action:@selector(paningGestureReceive:)];
@@ -294,5 +301,4 @@ static CGFloat screenWidth ;
     ||[self.viewControllers indexOfObject:vc] == 0
     ||(vc.parentViewController && (![vc.parentViewController isKindOfClass:[UINavigationController class]] && [self.viewControllers indexOfObject:vc.parentViewController]==0));
 }
-         
 @end
