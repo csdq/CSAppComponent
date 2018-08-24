@@ -87,8 +87,24 @@
 
 //MARK:扩展
 
-///通过身份证号码 获取出生时间
-+ (NSDate *)getBirthDate:(NSString *)idCardNum;
+
+/**
+ 通过身份证号码获取生日
+
+ @param idCardNum 身份证号码
+ @param yesOrNo 是否需要验证身份证号码
+ @return 日期
+ */
++ (NSDate *)getBirthDate:(NSString *)idCardNum cardNumVerify:(BOOL)yesOrNo;
+
+/**
+ 通过身份证号码获取生日
+ 
+ @param idCardNum 身份证号码
+ @param yesOrNo 是否需要验证身份证号码
+ @return 日期yyyy-MM-dd
+ */
++ (NSString *)getBirthDateString:(NSString *)idCardNum cardNumVerify:(BOOL)yesOrNo;
 /**
  *  汉字转拼音（含声调）
  */

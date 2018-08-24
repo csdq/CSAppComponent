@@ -115,21 +115,34 @@ static CSDataTool *_instance;
 }
 
 + (BOOL)isMale:(NSString *)idCardNum{
-//    NSAssert([self isIDCardNum:idCardNum], @"Invalid ID Card Num");
+    //    NSAssert([self isIDCardNum:idCardNum], @"Invalid ID Card Num");
     if(![self isIDCardNum:idCardNum]){
         return NO;
     }
     return [[idCardNum substringWithRange:NSMakeRange(16, 1)] integerValue] == 1;
 }
 
-+ (NSDate *)getBirthDate:(NSString *)idCardNum{
++ (NSDate *)getBirthDate:(NSString *)idCardNum cardNumVerify:(BOOL)yesOrNo{
     NSString *dateStr = nil;
-    if([self isIDCardNum:idCardNum]){
-        dateStr = [idCardNum substringWithRange:NSMakeRange(6, 8)];
+    if(yesOrNo){
+        if([self isIDCardNum:idCardNum]){
+            dateStr = [idCardNum substringWithRange:NSMakeRange(6, 8)];
+        }
+    }else{
+        if(idCardNum.length>14){
+            dateStr = [idCardNum substringWithRange:NSMakeRange(6, 8)];
+        }
     }
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyyMMdd";
     return [dateFormatter dateFromString:dateStr];
+}
+
++ (NSString *)getBirthDateString:(NSString *)idCardNum cardNumVerify:(BOOL)yesOrNo{
+    NSDate *date = [self getBirthDate:idCardNum cardNumVerify:yesOrNo];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd";
+    return [dateFormatter stringFromDate:date];
 }
 
 ///验证是否是邮箱
