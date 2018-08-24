@@ -9,6 +9,11 @@
 
 typedef void(^ReloadBlock)(void);
 @interface UIView (CSNotice)
+@property (nonatomic,strong) UIActivityIndicatorView * cs_spin;
+//显示UIActivityIndicatorView
+- (void)cs_showLoadState;
+//隐藏UIActivityIndicatorView
+- (void)cs_hideLoadState;
 ///显示提示（如果设置了图片则显示图片和文字）
 - (void)cs_showNoticeText:(NSString *)txt;
 ///隐藏提示
