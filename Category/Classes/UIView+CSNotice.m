@@ -19,8 +19,14 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
         [self addSubview:self.cs_spin];
     }
     if(!self.cs_spin.isAnimating){
+        [self bringSubviewToFront:self.cs_spin];
         [self.cs_spin startAnimating];
     }
+}
+
+- (void)cs_showLoadStateInCenterOfView:(UIView *)view{
+    self.cs_spin.center = CGPointMake(self.frame.size.width / 2.0, self.frame.size.height/2.0);
+    [self cs_showLoadState];
 }
 
 - (void)cs_hideLoadState{
@@ -34,6 +40,7 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
     if(!spin){
         spin = [UIActivityIndicatorView new];
         spin.hidesWhenStopped = YES;
+        spin.frame = CGRectMake(0, 0, 44, 44);
         spin.center = CGPointMake(self.frame.size.width / 2.0f, self.frame.size.height / 2.4);
         objc_setAssociatedObject(self, cs_notice_spin_key, spin, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
@@ -114,7 +121,7 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
     if(imgV && imgV.superview){
         [imgV removeFromSuperview];
     }
-    objc_removeAssociatedObjects(self);
+//    objc_removeAssociatedObjects(self);
 }
 
 - (void)cs_setNoticeImg:(UIImageView *)imgView{
@@ -130,14 +137,5 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
     if(block){
         block();
     }
-}
-
-- (void)dealloc{
-//    UILabel *lb = [self cs_getTitleView];
-//    UIImageView *imgV = [self cs_getImgView];
-//    [lb removeFromSuperview];
-//    [imgV removeFromSuperview];
-//    [self.cs_spin removeFromSuperview];
-    objc_removeAssociatedObjects(self);
 }
 @end

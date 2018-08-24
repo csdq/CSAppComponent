@@ -12,6 +12,8 @@ typedef void(^ReloadBlock)(void);
 @property (nonatomic,strong) UIActivityIndicatorView * cs_spin;
 //显示UIActivityIndicatorView
 - (void)cs_showLoadState;
+//显示UIActivityIndicatorView
+- (void)cs_showLoadStateInCenterOfView:(UIView *)view;
 //隐藏UIActivityIndicatorView
 - (void)cs_hideLoadState;
 ///显示提示（如果设置了图片则显示图片和文字）
