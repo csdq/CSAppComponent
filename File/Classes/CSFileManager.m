@@ -16,7 +16,8 @@ typedef enum : NSUInteger {
     CSFileErrorCodeOK = 0,
     CSFileErrorCodeURLNil = 1,
     CSFileErrorCodeDownloadFailed = 2,
-    CSFileErrorCodeMoveFailed
+    CSFileErrorCodeMoveFailed,
+    CSFileErrorCodeUserCancel
 } CSFileErrorCode;
 static sqlite3 *database = nil;
 static NSString *databasePath = nil;
@@ -41,18 +42,6 @@ static sqlite3_stmt *statement = nil;
 }
 
 - (NSDictionary *)fileAttribute{
-//    NSFileCreationDate = "2018-08-13 09:38:36 +0000";
-//    NSFileExtensionHidden = 0;
-//    NSFileGroupOwnerAccountID = 20;
-//    NSFileGroupOwnerAccountName = staff;
-//    NSFileModificationDate = "2018-08-13 09:38:38 +0000";
-//    NSFileOwnerAccountID = 502;
-//    NSFilePosixPermissions = 384;
-//    NSFileReferenceCount = 1;
-//    NSFileSize = 47121;
-//    NSFileSystemFileNumber = 12922136;
-//    NSFileSystemNumber = 16777221;
-//    NSFileType = NSFileTypeRegular;
     return [NSFileManager.defaultManager attributesOfItemAtPath:self.absolutePath error:nil];
 }
 
@@ -61,13 +50,13 @@ static sqlite3_stmt *statement = nil;
 }
 
 - (NSString *)fileSizeText{
-//    Byte
+    //    Byte
     NSInteger byteSize = [self.fileSize integerValue];
     NSInteger KB = byteSize/1024;
     NSInteger MB = KB/1024;
     NSInteger GB = MB/1024;
     if(byteSize < 1024){
-//        B
+        //        B
         return [NSString stringWithFormat:@"%ldBytes",byteSize];
     }else{
         if(KB < 1024){
@@ -180,14 +169,15 @@ static CSFileManager *_manager;
         [request setHTTPMethod:@"GET"];
         NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request];
         [CSFileManager.sharedInstance.downloadModels setObject:fileModel forKey:@(downloadTask.taskIdentifier)];
-        [CSFileManager.sharedInstance.progressBlocks setObject:progress forKey:@(downloadTask.taskIdentifier)];
+        if(progress){
+            [CSFileManager.sharedInstance.progressBlocks setObject:progress forKey:@(downloadTask.taskIdentifier)];
+        }
         if(completed){
             [CSFileManager.sharedInstance.finishBlocks setObject:completed forKey:@(downloadTask.taskIdentifier)];
         }
         if(failed){
             [CSFileManager.sharedInstance.errorBlocks setObject:failed forKey:@(downloadTask.taskIdentifier)];
         }
-
         [downloadTask resume];
     }else{
         NSError *error = [NSError errorWithDomain:CSFileErrorDomainName code:-1 userInfo:@{@"message":@"fielModel or source url is not correct"}];
@@ -218,7 +208,55 @@ static CSFileManager *_manager;
     }
 }
 
-////打开文件： 如果文件不在本地则下载
+//MARK:上传文件
++ (void)uploadFile:(NSData *)data
+          toServer:(NSURL *)url
+          progress:(void (^)(CGFloat))progress
+            forKey:(NSString *)key
+         completed:(void (^)(CSFile *))completed
+            failed:(void (^)(NSError *))failed{
+//    NSAssert(data!=nil, @"data cannot be nil");
+//    NSAssert(url!=nil, @"url cannot be nil")
+//    if(progress){
+//        [CSFileManager.sharedInstance.progressBlocks setObject:progress forKey:@(downloadTask.taskIdentifier)];
+//    }
+//    if(completed){
+//        [CSFileManager.sharedInstance.finishBlocks setObject:completed forKey:@(downloadTask.taskIdentifier)];
+//    }
+//    if(failed){
+//        [CSFileManager.sharedInstance.errorBlocks setObject:failed forKey:@(downloadTask.taskIdentifier)];
+//    }
+//    NSURLSession * session = CSFileManager.sharedInstance.session;
+//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+//    [request setHTTPMethod:@"POST"];
+//    NSString *boundary = @"----CSBoundary";
+//    [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary] forHTTPHeaderField:@"Content-Type"];
+//    
+//    NSMutableData *dataSend = [[NSMutableData alloc] init];
+//    [dataSend appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+//    [dataSend appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file\"; filename=\"%@\"\r\n", model.fileName] dataUsingEncoding:NSUTF8StringEncoding]];
+//    [dataSend appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n",@"application/octet-stream"] dataUsingEncoding:NSUTF8StringEncoding]];
+//    NSLog(@"upload file:\n %@",[[NSString alloc] initWithData:dataSend encoding:NSUTF8StringEncoding]);
+//    NSData *fileData = [NSData dataWithContentsOfFile:model.filePath];
+//    [dataSend appendData:fileData];
+//    [dataSend appendData:[[NSString stringWithFormat:@"\r\n--%@--",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+//    [request setHTTPBody:dataSend];
+//    NSURLSessionDataTask *uploadTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//        NSDictionary *dict;
+//        if(data!=nil){
+//            dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+//            if(error==nil){
+//
+//            }
+//        }
+//        if(fBlock){
+//            fBlock(model,dict,error);
+//        }
+//    }];
+//    [uploadTask resume];
+}
+
+///MARK:打开文件： 如果文件不在本地则下载
 + (void)openFile:(CSFile *)file{
     
 }
@@ -236,16 +274,16 @@ static CSFileManager *_manager;
 ////
 + (void)deleteAllFiles{
     [[CSFileManager fetachAllFiles] enumerateObjectsUsingBlock:^(CSFile * _Nonnull file, NSUInteger idx, BOOL * _Nonnull stop) {
-       [CSFileManager.sharedInstance->_fileManager removeItemAtPath:file.absolutePath error:nil];
+        [CSFileManager.sharedInstance->_fileManager removeItemAtPath:file.absolutePath error:nil];
         //移除父级文件夹
-//        [CSFileManager.sharedInstance->_fileManager removeItemAtPath:file.absolutePath.stringByDeletingLastPathComponent error:nil];
+        //        [CSFileManager.sharedInstance->_fileManager removeItemAtPath:file.absolutePath.stringByDeletingLastPathComponent error:nil];
     }];
     [CSFileManager.sharedInstance deleteAllFiles];
 }
 + (void)deleteFile:(CSFile *)file{
     [CSFileManager.sharedInstance->_fileManager removeItemAtPath:file.absolutePath error:nil];
     //移除父级文件夹
-//    [CSFileManager.sharedInstance->_fileManager removeItemAtPath:file.absolutePath.stringByDeletingLastPathComponent error:nil];
+    //    [CSFileManager.sharedInstance->_fileManager removeItemAtPath:file.absolutePath.stringByDeletingLastPathComponent error:nil];
     [CSFileManager.sharedInstance deleteFile:file.fileId];
 }
 
@@ -256,9 +294,9 @@ static CSFileManager *_manager;
 //MARK: DELEGATE
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error{
     if(error){
-    CSFile *model = [CSFileManager.sharedInstance.downloadModels objectForKey:@(task.taskIdentifier)];
-    NSString *message = error.localizedDescription==nil?@"网络错误":error.localizedDescription;
-    [NSNotificationCenter.defaultCenter postNotificationName:kCS_NOTIFCATION_FILE_DOWNLOAD_SUCCESS object:nil userInfo:@{@"code":@(CSFileErrorCodeDownloadFailed),@"message":message,@"fileUuid":model.fileId}];
+        CSFile *model = [CSFileManager.sharedInstance.downloadModels objectForKey:@(task.taskIdentifier)];
+        NSString *message = error.localizedDescription==nil?@"网络错误":error.localizedDescription;
+        [NSNotificationCenter.defaultCenter postNotificationName:kCS_NOTIFCATION_FILE_DOWNLOAD_SUCCESS object:nil userInfo:@{@"code":@(CSFileErrorCodeDownloadFailed),@"message":message,@"fileUuid":model.fileId}];
         void(^failedBlock)(NSError *error) = self.errorBlocks[@(task.taskIdentifier)];
         if(failedBlock){
             failedBlock(error);
@@ -274,10 +312,6 @@ static CSFileManager *_manager;
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location{
     CSFile *model = [CSFileManager.sharedInstance.downloadModels objectForKey:@(downloadTask.taskIdentifier)];
-    if(model==nil||model.fileId==nil){
-        //TODO:
-        //kOA_POST_NOTIFICATION(kOA_NOTIFICATION_FILE_DOWNLOAD, ([NSDictionary dictionaryWithObjectsAndKeys:@"-1",@"code",@"文件id为空",@"message",model.fileUuid,@"fileUuid",model.fileName,@"fileName",nil]))
-    }
     NSLog(@"下载完成");
     NSInteger statusCode = ((NSHTTPURLResponse *)downloadTask.response).statusCode;
     BOOL success = NO;
@@ -308,10 +342,6 @@ didFinishDownloadingToURL:(NSURL *)location{
             failedBlock([NSError errorWithDomain:CSFileErrorDomainName code:CSFileErrorCodeDownloadFailed userInfo:@{}]);
         }
     }else{
-//        NSMutableString *filePath = [NSMutableString stringWithFormat:@"%@/%@/",CSFileManager.sharedInstance.fileDirectory,model.fileId];
-//        NSError *error = nil;
-//        [CSFileManager createDir:filePath];
-//        [filePath appendString:model.fileName];
         NSMutableString *filePath = [NSMutableString stringWithFormat:@"%@/%@",CSFileManager.sharedInstance.fileDirectory,model.fileName];
         NSError *error = nil;
         NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -352,13 +382,15 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite{
     progress(1.0 * totalBytesWritten/totalBytesExpectedToWrite);
 }
 
-//- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
-// didResumeAtOffset:(int64_t)fileOffset
-//expectedTotalBytes:(int64_t)expectedTotalBytes{
-//    void(^progress)(CGFloat percent) = self.progressBlocks[@(downloadTask.taskIdentifier)];
-//    progress(1.0 * fileOffset/expectedTotalBytes);
-//    NSLog(@"2222    %lld---%lld---%f",fileOffset,expectedTotalBytes,1.0 * fileOffset/expectedTotalBytes);
-//}
+//MARK: 上传文件
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+    totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend{
+    void(^progress)(CGFloat percent) = self.progressBlocks[@(task.taskIdentifier)];
+    progress(1.0 * totalBytesSent/totalBytesExpectedToSend);
+}
+
 //MARK: Data Storage
 - (BOOL)createDB{
     NSArray *arr = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);

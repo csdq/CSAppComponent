@@ -139,7 +139,9 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
 }
 //MARK: 隐藏“菊花”
 - (void)hideLoadState{
-    [self.spinView stopAnimating];
+    if(self.spinView.superview){
+        [self.spinView stopAnimating];
+    }
 }
 
 - (void)gestureBackEnable:(BOOL)yesOrNo{

@@ -206,8 +206,8 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
         if(self.failBlock){
             CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
             model.task = task;
-            model.iSuccess = YES;
-            model.responseObject = error;
+            model.iSuccess = NO;
+            model.error = error;
             self.failBlock(model);
         }
     }];
@@ -235,8 +235,8 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
         if(self.failBlock){
             CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
             model.task = task;
-            model.iSuccess = YES;
-            model.responseObject = error;
+            model.iSuccess = NO;
+            model.error = error;
             self.failBlock(model);
         }
     }];

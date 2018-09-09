@@ -45,6 +45,13 @@ extern NSString * kCS_NOTIFCATION_FILE_DOWNLOAD_FAILED;
            completed:(void(^)(CSFile *file))completed
               failed:(void(^)(NSError *error))failed;
 + (void)cancelDownloadFile:(CSFile *)file;
+//上传文件
++ (void)uploadFile:(NSData *)data
+          toServer:(NSURL *)url
+          progress:(void(^)(CGFloat percent))progress
+            forKey:(NSString *)key
+         completed:(void(^)(CSFile *file))completed
+            failed:(void(^)(NSError *error))failed;
 //打开文件： 如果文件不在本地则下载
 + (void)openFile:(CSFile *)file;
 + (void)openFileWithURL:(NSURL *)url;
