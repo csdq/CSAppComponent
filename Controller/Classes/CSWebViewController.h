@@ -14,7 +14,7 @@
 @interface CSWebViewController : CSBaseViewController
 @property (nonatomic,strong) WKWebView * webView;
 ///js调用Cocoa
-CS_PROPERTY_DECLARE(RACSubject, webSubject);
+CS_PROPERTY_DECLARE(RACSubject, webActionSubject);
 ///加载URL 支持file http/https ftp
 CS_LINKCODE_METHOD(CSWebViewController, NSURL, loadURL)
 ///基础URL
@@ -28,4 +28,6 @@ CS_LINKCODE_METHOD(CSWebViewController, NSString, loadHTML)
 ///js调用结果
 CS_PROPERTY_DECLARE(RACSubject, webJSResultSubject);
 /**************/
+//Web Load Finish
+CS_PROPERTY_DECLARE(RACSubject, webLoadFinishedSubject)
 @end

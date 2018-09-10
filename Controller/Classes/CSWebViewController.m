@@ -23,6 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     _webJSCmdlock = [[NSLock alloc] init];
+    _webLoadFinishedSubject = [RACSubject subject];
     _semaphore = dispatch_semaphore_create(1);
     dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
     [self setView];
@@ -35,14 +36,15 @@
     _webView = nil;
     _request = nil;
     _baseURL = nil;
-    _webSubject = nil;
+    _webActionSubject = nil;
     _webJSCmd = nil;
     _webJSCmdlock = nil;
+    _webLoadFinishedSubject = nil;
 }
 
 - (void)runJavascript:(NSString *)js identifier:(NSString *)identifier{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0), ^{
-        [_webJSCmdlock lock];
+        [self->_webJSCmdlock lock];
         [self.webJSCmd execute:@{@"js":[self jsStringWithoutWhite:js],@"id":identifier}];
     });
 }
@@ -108,7 +110,7 @@
                     }
                     [self->_webJSCmdlock unlock];
                     [subscriber sendCompleted];
-                    dispatch_semaphore_signal(_semaphore);
+                    dispatch_semaphore_signal(self->_semaphore);
                 });
                 return nil;
             }];
@@ -153,10 +155,12 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation{
     NSLog(@"didFinishNavigation");
     dispatch_semaphore_signal(_semaphore);
+    [self.webLoadFinishedSubject sendNext:navigation];
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error;{
     NSLog(@"didFailNavigation");
+    [self.webLoadFinishedSubject sendError:error];
 }
 
 - (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler{
@@ -209,7 +213,7 @@
 }
 //MARK: script message handler
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
-    [self.webSubject sendNext:message];
+    [self.webActionSubject sendNext:message];
 }
 //MARK:
 CS_LINKCODE_METHOD_IMP(CSWebViewController, NSURL, loadURL, {
@@ -230,7 +234,7 @@ CS_LINKCODE_METHOD_IMP(CSWebViewController, NSURL, baseURL, {
     self->_baseURL = value;
 })
 
-CS_PROPERTY_INIT_CODE(RACSubject, webSubject, {
+CS_PROPERTY_INIT_CODE(RACSubject, webActionSubject, {
     [RACSubject subject];
 })
 
