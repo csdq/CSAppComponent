@@ -63,6 +63,12 @@
 }
 @end
 
+@interface CSDataTool()
+@property (nonatomic,strong) NSRegularExpression *regLetter;
+@property (nonatomic,strong) NSRegularExpression *regNum;
+@property (nonatomic,strong) NSRegularExpression *regSymbol;
+@end
+
 @implementation CSDataTool
 static CSDataTool *_instance;
 
@@ -72,6 +78,27 @@ static CSDataTool *_instance;
         _instance = [[CSDataTool alloc] init];
     });
     return _instance;
+}
+
+- (NSRegularExpression *)regLetter{
+    if(_regLetter == nil){
+        _regLetter = [NSRegularExpression regularExpressionWithPattern:@"[a-zA-Z]{1,}" options:NSRegularExpressionCaseInsensitive error:nil];
+    }
+    return _regLetter;
+}
+
+- (NSRegularExpression *)regNum{
+    if(_regNum == nil){
+        _regNum = [NSRegularExpression regularExpressionWithPattern:@"[0-9]{1,}" options:NSRegularExpressionCaseInsensitive error:nil];
+    }
+    return _regNum;
+}
+
+- (NSRegularExpression *)regSymbol{
+    if(_regSymbol == nil){
+        _regSymbol = [NSRegularExpression regularExpressionWithPattern:@"[!@#$%^&*(),.]{1,}" options:NSRegularExpressionCaseInsensitive error:nil];
+    }
+    return _regSymbol;
 }
 
 + (BOOL)isCellPhoneNum:(NSString *)str{
@@ -151,8 +178,35 @@ static CSDataTool *_instance;
     return [predicate evaluateWithObject:email];
 }
 
+///密码强度是否足够
++ (BOOL)isPasswordStrongerThanWeak:(NSString *)passwd{
+    CSPasswordStrength strength = [self passwordStrength:passwd];
+    return strength == CSPasswordStrong || strength == CSPasswordNormal;
+}
+
 + (BOOL)isStrongPassword:(NSString *)str{
-    return [str length] > 0;
+    return [self passwordStrength:str] == CSPasswordStrong;
+}
+
+//密码强度
++ (CSPasswordStrength)passwordStrength:(NSString *)passwd{
+    
+    NSPredicate * predicateValid = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",@"[\u4E00-\u9FA5]"];//包含了中文 其他不符合要求的字符 待增加
+    //除了密码为空，密码长度不考虑
+    if([passwd length] == 0 || [predicateValid evaluateWithObject:passwd]){
+        return CSPasswordInvalid;
+    }
+    NSInteger hasNum = [[[CSDataTool sharedInstance].regLetter matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
+    NSInteger hasLetter = [[[CSDataTool sharedInstance].regNum matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
+    NSInteger hasSymbol =[[[CSDataTool sharedInstance].regSymbol matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
+    NSInteger result = hasNum + hasLetter + hasSymbol;
+    switch (result) {
+        case 0:
+        default:return CSPasswordInvalid;
+        case 1:return CSPasswordWeak;
+        case 2:return CSPasswordNormal;
+        case 3:return CSPasswordStrong;
+    }
 }
 + (NSString *)dataToHexStr:(NSData *)data {
     NSString *strTemp = @"0123456789ABCDEF";

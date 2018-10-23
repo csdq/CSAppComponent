@@ -7,6 +7,13 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum : NSUInteger {
+    CSPasswordInvalid,
+    CSPasswordWeak,
+    CSPasswordNormal,
+    CSPasswordStrong
+} CSPasswordStrength;
+
 @interface CSDateWeek:NSObject
 @property (nonatomic , strong) NSDate *date;
 @property (nonatomic , strong) NSString *startDateStr;
@@ -36,7 +43,11 @@
 ///通过身份证号判断男女 男 或者 女
 + (BOOL)isMale:(NSString *)idCardNum;
 ///密码强度是否足够
-+ (BOOL)isStrongPassword:(NSString *)str;
++ (BOOL)isStrongPassword:(NSString *)passwd;
+///密码强度是否足够
++ (BOOL)isPasswordStrongerThanWeak:(NSString *)passwd;
+//密码强度
++ (CSPasswordStrength)passwordStrength:(NSString *)passwd;
 ///验证是否是邮箱
 + (BOOL)isValidEmail:(NSString *)email;
 //MARK:--数据处理--
