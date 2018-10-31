@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
     v1.0.6 增加文件下载和删除功能
     v1.0.7 修复CSDataModel 依赖版本写法错误
     v1.0.8 CSWebViewController增加webLoadFinishSubject 作为web加载完毕后的回调； 修改webSubject为webActionSubject
-    v1.0.9 
+    v1.0.9 修改网络请求& View的Activity Indicator position bug 等
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'
