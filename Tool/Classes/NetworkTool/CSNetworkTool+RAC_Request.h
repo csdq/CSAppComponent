@@ -6,6 +6,7 @@
 //
 
 #import "CSNetworkTool.h"
+#import <ReactiveCocoa/ReactiveCocoa.h>
 @class CSXMLParserDelegate;
 @interface CSNetworkTool (RAC_Request)
 /******************RAC处理方式的请求*********************/
@@ -13,4 +14,6 @@
 CS_LINKCODE_METHOD_VOID(RACSubject, rac_request)
 //返回解析后的对象
 CS_LINKCODE_METHOD_VOID(RACSubject, rac_soap_request)
+//
+CS_LINKCODE_METHOD_VOID(RACCommand, rac_command)
 @end

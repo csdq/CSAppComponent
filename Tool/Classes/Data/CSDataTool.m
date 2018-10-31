@@ -133,6 +133,11 @@ static CSDataTool *_instance;
 
 
 + (BOOL)isIDCardNum:(NSString *)str{
+    //15位转18
+    if(15 == [str length]){
+        str = [NSString stringWithFormat:@"%@19%@",[str substringWithRange:NSMakeRange(0, 8)],[str substringWithRange:NSMakeRange(0, 7)]];
+        str = [str stringByAppendingString:[self getIdCardCheckNum:str]];
+    }
     if([str length] != 18){
         return NO;
     }else{
@@ -146,7 +151,11 @@ static CSDataTool *_instance;
     if(![self isIDCardNum:idCardNum]){
         return NO;
     }
-    return [[idCardNum substringWithRange:NSMakeRange(16, 1)] integerValue] == 1;
+    if(idCardNum.length==18){
+        return [[idCardNum substringWithRange:NSMakeRange(16, 1)] integerValue]%2 == 1;
+    }else{
+        return [[idCardNum substringWithRange:NSMakeRange(14, 1)] integerValue]%2 == 1;
+    }
 }
 
 + (NSDate *)getBirthDate:(NSString *)idCardNum cardNumVerify:(BOOL)yesOrNo{

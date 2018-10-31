@@ -103,6 +103,9 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
     return [CSNetworkTool new];
 }
 
+- (void)dealloc{
+    
+}
 //- (instancetype)init
 //{
 //    self = [super init];
@@ -125,7 +128,7 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.requestSerializer.timeoutInterval = self.requestTimeout;
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
+//    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
     NSLog(@"CSHTTP REQUEST\n%@%@",_url,_argument);
     switch (self.httpMethod) {
         case CSHttpMethodPost:

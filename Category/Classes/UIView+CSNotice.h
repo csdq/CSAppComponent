@@ -13,6 +13,8 @@ typedef void(^ReloadBlock)(void);
 //显示UIActivityIndicatorView
 - (void)cs_showLoadState;
 //显示UIActivityIndicatorView
+- (void)cs_showLoadStateWithColor:(UIColor *)color;
+//显示UIActivityIndicatorView
 - (void)cs_showLoadStateInCenterOfView:(UIView *)view;
 //隐藏UIActivityIndicatorView
 - (void)cs_hideLoadState;

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.8'
+    s.version          = '1.0.9'
     s.summary          = '集成封装了常用库和基类'
     
     # This description is used to generate tags and improve search results.
@@ -27,6 +27,7 @@ Pod::Spec.new do |s|
     v1.0.6 增加文件下载和删除功能
     v1.0.7 修复CSDataModel 依赖版本写法错误
     v1.0.8 CSWebViewController增加webLoadFinishSubject 作为web加载完毕后的回调； 修改webSubject为webActionSubject
+    v1.0.9 
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'
@@ -43,7 +44,7 @@ Pod::Spec.new do |s|
     s.subspec 'CSClass' do |ss|
         ss.source_files = 'CSClass/Classes/**/*'
         ss.public_header_files = 'CSClass/Classes/**/*.h'
-        ss.dependency 'CSDataModel', '>= 1.1.1'
+        ss.dependency 'CSDataModel', '> 1.1.1'
     end
     #helper 包含常用宏定义 错误定义等
     s.subspec 'Helper' do |ss|
@@ -76,14 +77,14 @@ Pod::Spec.new do |s|
         ss.public_header_files = 'Model/Classes/**/*.h'
         ss.dependency 'CSAppComponent/CSClass'
         ss.dependency 'CSAppComponent/Helper'
-        ss.dependency 'CSDataModel', '>= 1.1.1'
+        ss.dependency 'CSDataModel', '> 1.1.1'
     end
     
     s.subspec 'Setting' do |ss|
         ss.source_files = 'Setting/Classes/**/*'
         ss.public_header_files = 'Setting/Classes/**/*.h'
         ss.dependency 'CSAppComponent/CSClass'
-        ss.dependency 'CSDataModel', '>= 1.1.1'
+        ss.dependency 'CSDataModel', '> 1.1.1'
     end
     
     s.subspec 'Tool' do |ss|
@@ -93,7 +94,7 @@ Pod::Spec.new do |s|
         ss.dependency 'CSAppComponent/Helper'
         ss.dependency 'CSAppComponent/Model'
         ss.dependency 'CSAppComponent/Setting'
-        ss.dependency 'CSDataModel', '>= 1.1.1'
+        ss.dependency 'CSDataModel', '> 1.1.1'
         ss.dependency 'ReactiveCocoa','~> 2.5.0'
         ss.dependency 'AFNetworking', '~> 3.0'
     end
@@ -119,7 +120,7 @@ Pod::Spec.new do |s|
     s.subspec 'File' do |ss|
         ss.source_files = 'File/Classes/**/*'
         ss.public_header_files = 'File/Classes/**/*.h'
-        ss.dependency 'CSDataModel', '>= 1.1.1'
+        ss.dependency 'CSDataModel', '> 1.1.1'
         ss.dependency 'CSAppComponent/Tool'
     end
     

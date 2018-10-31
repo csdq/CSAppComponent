@@ -14,6 +14,18 @@ const char * cs_notice_ges_key = "cs_notice_ges_key";
 const char * cs_notice_spin_key = "cs_notice_spin_key";
 @implementation UIView (CSNotice)
 @dynamic cs_spin;
+
++ (void)load{
+     method_exchangeImplementations(class_getInstanceMethod([self class], @selector(layoutSubviews)), class_getInstanceMethod([self class], @selector(cs_notice_layoutSubviews)));
+}
+
+- (void)cs_notice_layoutSubviews{
+    [self cs_notice_layoutSubviews];
+    UIActivityIndicatorView * spin = objc_getAssociatedObject(self, cs_notice_spin_key);
+    if(spin){
+        spin.center = CGPointMake(self.frame.size.width / 2.0, self.frame.size.height/2.2);
+    }
+}
 - (void)cs_showLoadState{
     if(self.cs_spin.superview == nil){
         [self addSubview:self.cs_spin];
@@ -22,6 +34,11 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
         [self bringSubviewToFront:self.cs_spin];
         [self.cs_spin startAnimating];
     }
+}
+//显示UIActivityIndicatorView
+- (void)cs_showLoadStateWithColor:(UIColor *)color{
+    self.cs_spin.color = color;
+    [self cs_showLoadState];
 }
 
 - (void)cs_showLoadStateInCenterOfView:(UIView *)view{
