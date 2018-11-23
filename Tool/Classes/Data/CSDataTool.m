@@ -7,6 +7,12 @@
 
 #import "CSDataTool.h"
 #import "CSDataSecurity.h"
+
+NSTimeInterval CSTimeIntervalMinute = 60.0;
+NSTimeInterval CSTimeIntervalHour = 3600.0;
+NSTimeInterval CSTimeIntervalDay = 86400;
+NSTimeInterval CSTimeIntervalWeek = 604800;
+
 @implementation CSDateWeek
 - (NSString *)startDateStr{
     return [[CSDataTool sharedInstance].dateFormatterDate stringFromDate:self.startDate];
@@ -311,6 +317,14 @@ static CSDataTool *_instance;
 
 + (NSString *)aesDecryption:(NSString *)str key:(NSString *)key{
     return [CSDataSecurity aes_decryptString:str password:key];
+}
+
++ (NSString *)desEncrption:(NSString *)str key:(NSString *)key{
+     return [CSDataSecurity des_decryptString:str password:key];
+}
+
++ (NSString *)desDecryption:(NSString *)str key:(NSString *)key{
+     return [CSDataSecurity des_decryptString:str password:key];
 }
 
 + (NSString *)encodeBase64String:(NSString *)string{

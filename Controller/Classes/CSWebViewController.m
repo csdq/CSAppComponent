@@ -45,7 +45,7 @@
 - (void)runJavascript:(NSString *)js identifier:(NSString *)identifier{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0), ^{
         [self->_webJSCmdlock lock];
-        [self.webJSCmd execute:@{@"js":[self jsStringWithoutWhite:js],@"id":identifier}];
+        [self.webJSCmd execute:@{@"js":js,@"id":identifier}];
     });
 }
 

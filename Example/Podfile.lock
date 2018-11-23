@@ -14,121 +14,62 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - CocoaAsyncSocket (7.6.3)
-  - CSAppComponent (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
-    - CSAppComponent/Category (= 1.0.6)
-    - CSAppComponent/Controller (= 1.0.6)
-    - CSAppComponent/CSClass (= 1.0.6)
-    - CSAppComponent/File (= 1.0.6)
-    - CSAppComponent/Helper (= 1.0.6)
-    - CSAppComponent/Model (= 1.0.6)
-    - CSAppComponent/Setting (= 1.0.6)
-    - CSAppComponent/Tool (= 1.0.6)
-    - CSAppComponent/View (= 1.0.6)
-    - CSAppComponent/ViewModel (= 1.0.6)
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Category (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
+  - CSAppComponent (1.0.9):
+    - CSAppComponent/Category (= 1.0.9)
+    - CSAppComponent/Controller (= 1.0.9)
+    - CSAppComponent/CSClass (= 1.0.9)
+    - CSAppComponent/File (= 1.0.9)
+    - CSAppComponent/Helper (= 1.0.9)
+    - CSAppComponent/Model (= 1.0.9)
+    - CSAppComponent/Setting (= 1.0.9)
+    - CSAppComponent/Tool (= 1.0.9)
+    - CSAppComponent/View (= 1.0.9)
+    - CSAppComponent/ViewModel (= 1.0.9)
+  - CSAppComponent/Category (1.0.9):
     - CSAppComponent/CSClass
     - CSAppComponent/Setting
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Controller (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
+  - CSAppComponent/Controller (1.0.9):
     - CSAppComponent/Category
     - CSAppComponent/CSClass
     - CSAppComponent/Helper
     - CSAppComponent/Setting
     - CSAppComponent/View
     - Masonry (~> 1.1.0)
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
     - ReactiveCocoa (~> 2.5.0)
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/CSClass (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
-    - CSDataModel (>= 1.1.1)
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/File (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
+  - CSAppComponent/CSClass (1.0.9):
+    - CSDataModel (> 1.1.1)
+  - CSAppComponent/File (1.0.9):
     - CSAppComponent/Tool
-    - CSDataModel (>= 1.1.1)
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Helper (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
+    - CSDataModel (> 1.1.1)
+  - CSAppComponent/Helper (1.0.9):
     - CSAppComponent/CSClass
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Model (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
+  - CSAppComponent/Model (1.0.9):
     - CSAppComponent/CSClass
     - CSAppComponent/Helper
-    - CSDataModel (>= 1.1.1)
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Setting (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
+    - CSDataModel (> 1.1.1)
+  - CSAppComponent/Setting (1.0.9):
     - CSAppComponent/CSClass
-    - CSDataModel (>= 1.1.1)
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/Tool (1.0.6):
+    - CSDataModel (> 1.1.1)
+  - CSAppComponent/Tool (1.0.9):
     - AFNetworking (~> 3.0)
-    - CocoaAsyncSocket (~> 7.6.2)
     - CSAppComponent/CSClass
     - CSAppComponent/Helper
     - CSAppComponent/Model
     - CSAppComponent/Setting
-    - CSDataModel (>= 1.1.1)
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
+    - CSDataModel (> 1.1.1)
     - ReactiveCocoa (~> 2.5.0)
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/View (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
+  - CSAppComponent/View (1.0.9):
     - CSAppComponent/Category
     - CSAppComponent/CSClass
     - CSAppComponent/Helper
     - CSAppComponent/Setting
     - CSAppComponent/ViewModel
     - Masonry (~> 1.1.0)
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
     - ReactiveCocoa (~> 2.5.0)
-    - SDWebImage (~> 4.3.3)
-  - CSAppComponent/ViewModel (1.0.6):
-    - CocoaAsyncSocket (~> 7.6.2)
+  - CSAppComponent/ViewModel (1.0.9):
     - CSAppComponent/CSClass
-    - MJRefresh (~> 3.1.15.3)
-    - ProgressHUD (~> 2.51)
-    - QBImagePickerController
-    - SDWebImage (~> 4.3.3)
-  - CSDataModel (1.1.1)
+  - CSDataModel (1.1.2)
   - Masonry (1.1.0)
-  - MJRefresh (3.1.15.3)
-  - ProgressHUD (2.51)
-  - QBImagePickerController (3.4.0)
   - ReactiveCocoa (2.5):
     - ReactiveCocoa/UI (= 2.5)
   - ReactiveCocoa/Core (2.5):
@@ -136,9 +77,6 @@ PODS:
   - ReactiveCocoa/no-arc (2.5)
   - ReactiveCocoa/UI (2.5):
     - ReactiveCocoa/Core
-  - SDWebImage (4.3.3):
-    - SDWebImage/Core (= 4.3.3)
-  - SDWebImage/Core (4.3.3)
 
 DEPENDENCIES:
   - CSAppComponent (from `../`)
@@ -146,14 +84,9 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AFNetworking
-    - CocoaAsyncSocket
     - CSDataModel
     - Masonry
-    - MJRefresh
-    - ProgressHUD
-    - QBImagePickerController
     - ReactiveCocoa
-    - SDWebImage
 
 EXTERNAL SOURCES:
   CSAppComponent:
@@ -161,15 +94,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
-  CSAppComponent: 48a76ea8fbde5e82614133914b6f4a2c73c0911b
-  CSDataModel: 7afcc8bd31fefe98703f03005d68ffac684d9c06
+  CSAppComponent: d5789f8d9424365163a6d65d104fce5a0f9b59d7
+  CSDataModel: 5d5eda57e89a656678d22e2810aa2cdf6dfc4645
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  MJRefresh: b48380ae2b927b46c4ef000de9adb8dc748e1df7
-  ProgressHUD: 54b4c2fa202bf3da7dddc1c698ae4e6376333bd9
-  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   ReactiveCocoa: e2db045570aa97c695e7aa97c2bcab222ae51f4a
-  SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
 
 PODFILE CHECKSUM: 7b9a44f93476a06b92264a5483f7f6a20746f346
 

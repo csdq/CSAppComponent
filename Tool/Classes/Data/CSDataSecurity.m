@@ -12,15 +12,14 @@
 #import <Security/Security.h>
 
 @implementation CSDataSecurity
-/*
- static NSString *base64_encode(NSString *str){
- NSData* data = [str dataUsingEncoding:NSUTF8StringEncoding];
- if(!data){
- return nil;
- }
- return base64_encode_data(data);
- }
- */
+
+static NSString *base64_encode(NSString *str){
+    NSData* data = [str dataUsingEncoding:NSUTF8StringEncoding];
+    if(!data){
+        return nil;
+    }
+    return base64_encode_data(data);
+}
 
 static NSString *base64_encode_data(NSData *data){
     data = [data base64EncodedDataWithOptions:0];
@@ -191,7 +190,7 @@ static NSData *base64_decode(NSString *str){
     
     // This will be base64 encoded, decode it.
     NSData *data = base64_decode(key);
-//    data = [CSDataSecurity stripPrivateKeyHeader:data];
+    //    data = [CSDataSecurity stripPrivateKeyHeader:data];
     if(!data){
         return nil;
     }
@@ -465,7 +464,7 @@ static Byte saltBuff[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
 static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
 
 + (NSData *)aesEncrption:(NSString *)plainText
-                       key:(NSString *)key{
+                     key:(NSString *)key{
     NSData *data = [plainText dataUsingEncoding:NSUTF8StringEncoding];
     // 'key' should be 32 bytes for AES256, will be null-padded otherwise
     char keyPtr[kCCKeySizeAES128+1]; // room for terminator (unused)
@@ -494,7 +493,7 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
 }
 
 + (NSData *)aesDecryption:(NSString *)decryptedText
-                        key:(NSString *)key{
+                      key:(NSString *)key{
     NSData *data = base64_decode(decryptedText);
     // 'key' should be 32 bytes for AES256, will be null-padded otherwise
     char keyPtr[kCCKeySizeAES128+1]; // room for terminator (unused)
@@ -521,6 +520,76 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
     return nil;
 }
 
+#pragma mark - DES
++ (NSString *)des_encryptString:(NSString *)str password:(NSString *)passwd{
+    return base64_encode_data([self aesEncrption:str key:passwd]);
+}
+
++ (NSData *)des_encryptData:(NSData *)data password:(NSString *)passwd{
+    return [self desEncrption:base64_encode_data(data) key:passwd];
+}
+
++ (NSString *)des_decryptString:(NSString *)str password:(NSString *)passwd{
+    NSString * result = [[NSString alloc] initWithData:[self desDecryption:str key:passwd] encoding:NSUTF8StringEncoding];
+    return result;
+}
+
++ (NSData *)des_decryptData:(NSData *)data password:(NSString *)passwd{
+    return [self desDecryption:base64_encode_data(data) key:passwd];
+}
+
++ (NSData *)desEncrption:(NSString *)plainText
+                     key:(NSString *)key{
+    NSData * data = base64_decode(plainText);
+    NSData * keyData = base64_decode(key);
+    size_t numBytesEncrypted = 0;
+    size_t bufferSize = data.length + kCCBlockSizeDES;
+    void *buffer = malloc(bufferSize);
+    
+    CCCryptorStatus result = CCCrypt( kCCEncrypt, kCCAlgorithmDES, kCCOptionECBMode,
+                                     keyData.bytes, kCCKeySizeDES,
+                                     NULL,
+                                     data.bytes, data.length,
+                                     buffer, bufferSize,
+                                     &numBytesEncrypted);
+    NSData *output = [NSData dataWithBytes:buffer length:numBytesEncrypted];
+    free(buffer);
+    if( result == kCCSuccess )
+    {
+        return output;
+    } else {
+        NSLog(@"Failed DES encrypt...");
+        return nil;
+    }
+}
+
++ (NSData *)desDecryption:(NSString *)decryptedText
+                      key:(NSString *)key{
+    NSData * data = base64_decode(decryptedText);
+    NSData * keyData = [key dataUsingEncoding:NSUTF8StringEncoding];//base64_decode(key);
+    
+    size_t numBytesEncrypted = 0;
+    size_t bufferSize = data.length + kCCBlockSizeDES;
+    void *buffer_decrypt = malloc(bufferSize);
+    CCCryptorStatus result = CCCrypt( kCCDecrypt , kCCAlgorithmDES, kCCOptionECBMode,
+                                     keyData.bytes, kCCKeySizeDES,
+                                     NULL,
+                                     data.bytes, data.length,
+                                     buffer_decrypt, bufferSize,
+                                     &numBytesEncrypted );
+    
+    NSData *output = [NSData dataWithBytes:buffer_decrypt length:numBytesEncrypted];
+    free(buffer_decrypt);
+    if( result == kCCSuccess )
+    {
+        return output;
+    } else {
+        NSLog(@"Failed DES decrypt ...");
+        return nil;
+    }
+}
+
+
 #pragma mark - MD5
 + (NSString *)md5:(NSString *)str{
     const char *original_str = [str UTF8String];
@@ -531,20 +600,20 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
         [hash appendFormat:@"%02X", result[i]];
     return [hash lowercaseString];
     
-//    const char *cStr = [str UTF8String];
-//    unsigned char result[CC_MD5_DIGEST_LENGTH];
-//    CC_MD5(cStr, (CC_LONG)strlen(cStr), result);
-//    
-//    NSString *MD5str = [[NSString stringWithFormat:@"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
-//                         result[0], result[1], result[2], result[3],
-//                         result[4], result[5], result[6], result[7],
-//                         result[8], result[9], result[10], result[11],
-//                         result[12], result[13], result[14], result[15]
-//                         ] lowercaseString];
-//    for (int i = 0; i < 16; i++) {
-//        result[i] = '\0';
-//    }
-//    return MD5str;
+    //    const char *cStr = [str UTF8String];
+    //    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    //    CC_MD5(cStr, (CC_LONG)strlen(cStr), result);
+    //
+    //    NSString *MD5str = [[NSString stringWithFormat:@"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
+    //                         result[0], result[1], result[2], result[3],
+    //                         result[4], result[5], result[6], result[7],
+    //                         result[8], result[9], result[10], result[11],
+    //                         result[12], result[13], result[14], result[15]
+    //                         ] lowercaseString];
+    //    for (int i = 0; i < 16; i++) {
+    //        result[i] = '\0';
+    //    }
+    //    return MD5str;
 }
 
 @end

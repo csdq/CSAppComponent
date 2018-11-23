@@ -138,6 +138,10 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
                     self.progressBlock(uploadProgress);
                 }
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                NSLog(@"CSHTTP RESPONSE\n%@",({NSMutableDictionary * mDict = [responseObject mutableCopy];
+                    [mDict setObject:@"trace..." forKey:@"trace"];
+                    mDict;
+                }));
                 if(self.successBlock){
                     CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
                     model.task = task;
@@ -188,6 +192,7 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.requestSerializer.timeoutInterval = self.requestTimeout;
     manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+     manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
 //    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
 //    manager.securityPolicy.allowInvalidCertificates = YES;
     NSLog(@"CSHTTP REQUEST\n%@%@",_url,_argument);
@@ -196,7 +201,10 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
             self.progressBlock(uploadProgress);
         }
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"CSHTTP RESPONSE\n%@",responseObject);
+        NSLog(@"CSHTTP RESPONSE\n%@",({NSMutableDictionary * mDict = [responseObject mutableCopy];
+            [mDict setObject:@"trace..." forKey:@"trace"];
+            mDict;
+        }));
         if(self.successBlock){
             CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
             model.task = task;
@@ -225,7 +233,10 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
             self.progressBlock(downloadProgress);
         }
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"CSHTTP RESPONSE\n%@",responseObject);
+        NSLog(@"CSHTTP RESPONSE\n%@",({NSMutableDictionary * mDict = [responseObject mutableCopy];
+            [mDict setObject:@"trace..." forKey:@"trace"];
+            mDict;
+        }));
         if(self.successBlock){
             CSHTTPCommonResponseModel *model = [CSHTTPCommonResponseModel new];
             model.task = task;

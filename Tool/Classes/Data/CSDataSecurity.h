@@ -31,6 +31,12 @@
 + (NSString *)aes_decryptString:(NSString *)str password:(NSString *)passwd;
 + (NSData *)aes_decryptData:(NSData *)data password:(NSString *)passwd;
 
+/************DES*****************/
++ (NSString *)des_encryptString:(NSString *)str password:(NSString *)passwd;
++ (NSData *)des_encryptData:(NSData *)data password:(NSString *)passwd;
++ (NSString *)des_decryptString:(NSString *)str password:(NSString *)passwd;
++ (NSData *)des_decryptData:(NSData *)data password:(NSString *)passwd;
+
 /************MD5*****************/
 + (NSString *)md5:(NSString *)str;
 @end

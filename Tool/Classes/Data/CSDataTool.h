@@ -7,6 +7,11 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSTimeInterval CSTimeIntervalMinute;
+extern NSTimeInterval CSTimeIntervalHour;
+extern NSTimeInterval CSTimeIntervalDay;
+extern NSTimeInterval CSTimeIntervalWeek;
+
 typedef enum : NSUInteger {
     CSPasswordInvalid,
     CSPasswordWeak,
@@ -95,6 +100,9 @@ typedef enum : NSUInteger {
 
 + (NSString *)aesEncrption:(NSString *)str key:(NSString *)key;
 + (NSString *)aesDecryption:(NSString *)str key:(NSString *)key;
+
++ (NSString *)desEncrption:(NSString *)str key:(NSString *)key;
++ (NSString *)desDecryption:(NSString *)str key:(NSString *)key;
 
 //MARK:扩展
 

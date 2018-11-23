@@ -33,13 +33,7 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
 }
 
 - (void)_cs_viewDidLoad{
-    @weakify(self)
-    [[RACObserve(self, title) takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
-        @strongify(self)
-        if([x isKindOfClass:[NSString class]]){
-            self.cs_navigationBar.title = x;
-        }
-    }];
+    RACChannelTo(self.cs_navigationBar,title) = RACChannelTo(self,title);
     [self _cs_viewDidLoad];
     [self cs_viewDidLoad];
     [self cs_setModel];
