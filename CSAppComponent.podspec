@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.9'
+    s.version          = '1.0.10'
     s.summary          = '集成封装了常用库和基类'
     
     # This description is used to generate tags and improve search results.
