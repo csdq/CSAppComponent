@@ -62,16 +62,23 @@
     mainView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:mainView];
     if (@available(iOS 11,*)){
-        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-        NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-        [NSLayoutConstraint activateConstraints:@[top, bottom, left, right]];
+        [NSLayoutConstraint activateConstraints:
+         @[
+           [mainView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+           [mainView.rightAnchor constraintEqualToAnchor: self.view.safeAreaLayoutGuide.rightAnchor],
+           [mainView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+           [mainView.leftAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leftAnchor],
+           ]];
     }else{
         id<UILayoutSupport> top = self.topLayoutGuide;
         id<UILayoutSupport> bottom = self.bottomLayoutGuide;
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mainView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(mainView)]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[top]-0-[mainView]-0-[bottom]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(mainView,top,bottom)]];
+        if(self.cs_navigationBar.superview||([self.navigationController isKindOfClass:[CSNavViewController class]]&&((CSBaseNavViewController *)self.navigationController).useCustomNavigationBar)){
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mainView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(mainView)]];
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[top]-44-[mainView]-0-[bottom]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(mainView,top,bottom)]];
+        }else{
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mainView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(mainView)]];
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[top]-0-[mainView]-0-[bottom]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(mainView,top,bottom)]];
+        }
     }
 }
 
