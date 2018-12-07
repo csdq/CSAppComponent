@@ -70,8 +70,9 @@ NSTimeInterval CSTimeIntervalWeek = 604800;
 @end
 
 @interface CSDataTool()
-@property (nonatomic,strong) NSRegularExpression *regLetter;
 @property (nonatomic,strong) NSRegularExpression *regNum;
+@property (nonatomic,strong) NSRegularExpression *regLowerLetter;
+@property (nonatomic,strong) NSRegularExpression *regUpperLetter;
 @property (nonatomic,strong) NSRegularExpression *regSymbol;
 @end
 
@@ -86,23 +87,30 @@ static CSDataTool *_instance;
     return _instance;
 }
 
-- (NSRegularExpression *)regLetter{
-    if(_regLetter == nil){
-        _regLetter = [NSRegularExpression regularExpressionWithPattern:@"[a-zA-Z]{1,}" options:NSRegularExpressionCaseInsensitive error:nil];
+- (NSRegularExpression *)regUpperLetter{
+    if(_regUpperLetter == nil){
+        _regUpperLetter = [NSRegularExpression regularExpressionWithPattern:@"[A-Z]{1,}" options:0 error:nil];
     }
-    return _regLetter;
+    return _regUpperLetter;
+}
+
+- (NSRegularExpression *)regLowerLetter{
+    if(_regLowerLetter == nil){
+        _regLowerLetter = [NSRegularExpression regularExpressionWithPattern:@"[a-z]{1,}" options:0 error:nil];
+    }
+    return _regLowerLetter;
 }
 
 - (NSRegularExpression *)regNum{
     if(_regNum == nil){
-        _regNum = [NSRegularExpression regularExpressionWithPattern:@"[0-9]{1,}" options:NSRegularExpressionCaseInsensitive error:nil];
+        _regNum = [NSRegularExpression regularExpressionWithPattern:@"[0-9]{1,}" options:0 error:nil];
     }
     return _regNum;
 }
 
 - (NSRegularExpression *)regSymbol{
     if(_regSymbol == nil){
-        _regSymbol = [NSRegularExpression regularExpressionWithPattern:@"[!@#$%^&*(),.]{1,}" options:NSRegularExpressionCaseInsensitive error:nil];
+        _regSymbol = [NSRegularExpression regularExpressionWithPattern:@"[!@#$%^&*(),. -]{1,}" options:0 error:nil];
     }
     return _regSymbol;
 }
@@ -211,10 +219,11 @@ static CSDataTool *_instance;
     if([passwd length] == 0 || [predicateValid evaluateWithObject:passwd]){
         return CSPasswordInvalid;
     }
-    NSInteger hasNum = [[[CSDataTool sharedInstance].regLetter matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
-    NSInteger hasLetter = [[[CSDataTool sharedInstance].regNum matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
+    NSInteger hasUpperLetter = [[[CSDataTool sharedInstance].regUpperLetter matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
+    NSInteger hasLowLetter = [[[CSDataTool sharedInstance].regLowerLetter matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
+    NSInteger hasNum = [[[CSDataTool sharedInstance].regNum matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
     NSInteger hasSymbol =[[[CSDataTool sharedInstance].regSymbol matchesInString:passwd options:NSMatchingReportProgress range:NSMakeRange(0, passwd.length)] count] > 0?1:0;
-    NSInteger result = hasNum + hasLetter + hasSymbol;
+    NSInteger result = hasNum + hasLowLetter + hasUpperLetter + hasSymbol;
     switch (result) {
         case 0:
         default:return CSPasswordInvalid;

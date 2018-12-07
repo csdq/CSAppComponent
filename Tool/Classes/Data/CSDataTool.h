@@ -16,7 +16,8 @@ typedef enum : NSUInteger {
     CSPasswordInvalid,
     CSPasswordWeak,
     CSPasswordNormal,
-    CSPasswordStrong
+    CSPasswordStrong,
+    CSPasswordStrongest
 } CSPasswordStrength;
 
 @interface CSDateWeek:NSObject
