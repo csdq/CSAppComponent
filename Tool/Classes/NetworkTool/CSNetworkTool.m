@@ -11,6 +11,9 @@
 #import "CSHTTPCommonResponseModel.h"
 #import "CSErrorDomain.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#include <ifaddrs.h>
+#include <arpa/inet.h>
+
 NSString *K_NETWORKTOOL_ARGUMENT_KEY_SOAP_XML = @"K_NETWORKTOOL_ARGUMENT_KEY_SOAP_XML";
 @implementation CSRequestPage
 + (instancetype)page{
@@ -95,12 +98,46 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
     }
     return self;
 }
+
 + (instancetype)shared{
     return [self createInstance];
 }
 
 + (instancetype)createInstance{
     return [CSNetworkTool new];
+}
+
++ (NSString *)getIPv4Address{
+    NSString *address_wifi = @"";
+    NSString *address_cellular = @"";
+    struct ifaddrs *interfaces = NULL;
+    struct ifaddrs *temp_addr = NULL;
+    int success = 0;
+    
+    success = getifaddrs(&interfaces);
+    if (success == 0) {
+        temp_addr = interfaces;
+        while (temp_addr != NULL) {
+            if( temp_addr->ifa_addr->sa_family == AF_INET) {
+                if ([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]){
+                    address_wifi = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
+                }
+                if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"pdp_ip0"] ) {
+                    address_cellular = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
+                }
+            }
+            temp_addr = temp_addr->ifa_next;
+        }
+    }
+    freeifaddrs(interfaces);
+    return address_wifi.length>0?address_wifi:address_cellular;
+}
+
+- (NSString *)identifier{
+    if(_identifier == nil){
+        _identifier = self->_url;
+    }
+    return _identifier;
 }
 
 - (void)dealloc{

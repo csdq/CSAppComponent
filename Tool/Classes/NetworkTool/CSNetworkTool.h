@@ -51,14 +51,18 @@ typedef void(^CSHttpRequestCommonBlock)(id obj);
     NSString *_soapArguments;
    
 }
+/*!@description tool identifier default: _url*/
+CS_PROPERTY_DECLARE(NSString, identifier)
 CS_PROPERTY_DECLARE(NSURLSessionDataTask, currentTask)
 CS_PROPERTY_ASSIGN_DECLARE(CSHttpMethod ,httpMethod)
 CS_PROPERTY_DECLARE(NSMutableURLRequest, request)
 CS_PROPERTY_ASSIGN_DECLARE(NSTimeInterval, requestTimeout)
 ///请求结果RACSubject
 CS_PROPERTY_DECLARE(RACSubject ,resultSubject);
-//创建实例
+/*!@description 创建实例*/
 + (instancetype)createInstance;
+/*!@description 获取IPv4地址*/
++ (NSString *)getIPv4Address;
 ///请求超时时间
 CS_LINKCODE_METHOD_ASSIGN(CSNetworkTool, NSTimeInterval, timeout)
 ///必要-设置url
