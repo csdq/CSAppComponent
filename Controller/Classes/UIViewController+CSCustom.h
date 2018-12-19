@@ -23,7 +23,8 @@
 - (void)cs_setModel;
 ///设置视图模型 自动调用
 - (void)cs_setViewModel;
-
+/*!@description 显示导航栏/navgationControl push后默认自动显示导航栏*/
+- (void)cs_showNavBar;
 
 @optional
 ///如果定义了该方法 viewdidload时自动调用

@@ -164,7 +164,19 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
 - (void)beginRequest{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.requestSerializer.timeoutInterval = self.requestTimeout;
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    switch (self.responseFormat) {
+        case CSResponseFormatJSON:
+            manager.responseSerializer = [AFJSONResponseSerializer serializer];
+            break;
+        case CSResponseFormatXML:
+            manager.responseSerializer= [AFXMLParserResponseSerializer serializer];
+            break;
+        case CSResponseFormatPlain:
+        default:
+            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+            break;
+    }
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
 //    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
     NSLog(@"CSHTTP REQUEST\n%@%@",_url,_argument);
     switch (self.httpMethod) {
@@ -229,7 +241,19 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.requestSerializer.timeoutInterval = self.requestTimeout;
     manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-     manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    switch (self.responseFormat) {
+        case CSResponseFormatJSON:
+            manager.responseSerializer = [AFJSONResponseSerializer serializer];
+            break;
+        case CSResponseFormatXML:
+            manager.responseSerializer= [AFXMLParserResponseSerializer serializer];
+            break;
+        case CSResponseFormatPlain:
+        default:
+            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+            break;
+    }
 //    [manager.requestSerializer.HTTPRequestHeaders setValue:@"no-store" forKey:@"Cache-Control"];
 //    manager.securityPolicy.allowInvalidCertificates = YES;
     NSLog(@"CSHTTP REQUEST\n%@%@",_url,_argument);
@@ -238,8 +262,12 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
             self.progressBlock(uploadProgress);
         }
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"CSHTTP RESPONSE\n%@",({NSMutableDictionary * mDict = [responseObject mutableCopy];
-            [mDict setObject:@"trace..." forKey:@"trace"];
+        NSLog(@"CSHTTP RESPONSE\n%@",({
+            NSMutableDictionary * mDict = nil;
+            if([responseObject isKindOfClass:[NSDictionary class]]){
+                mDict = [responseObject mutableCopy];
+                [mDict setObject:@"trace..." forKey:@"trace"];
+            }
             mDict;
         }));
         if(self.successBlock){
@@ -265,6 +293,18 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.requestSerializer.timeoutInterval = self.requestTimeout;
     manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    switch (self.responseFormat) {
+        case CSResponseFormatJSON:
+            manager.responseSerializer = [AFJSONResponseSerializer serializer];
+            break;
+        case CSResponseFormatXML:
+            manager.responseSerializer= [AFXMLParserResponseSerializer serializer];
+            break;
+        case CSResponseFormatPlain:
+        default:
+            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+            break;
+    }
     return [manager GET:_url parameters:_argument progress:^(NSProgress * _Nonnull downloadProgress) {
         if(self.progressBlock){
             self.progressBlock(downloadProgress);
@@ -345,5 +385,13 @@ CS_LINKCODE_METHOD_VOID_IMP(CSNetworkTool,cs_get,{
 
 CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, NSTimeInterval, timeout, {
     self.requestTimeout = value;
+})
+
+CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, CSResponseFormat, setResponseFormat, {
+    self.responseFormat = value;
+})
+//
+CS_PROPERTY_INIT_CODE(CSResponseFormat, responseFormat,{
+    CSResponseFormatJSON;
 })
 @end

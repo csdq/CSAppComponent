@@ -39,9 +39,9 @@ const char * CS_Nav_Bar_Key = "CS_Nav_Bar_Key";
 - (BOOL)hideBackButton{
     return (!self.navigationController)
     ||[self.navigationController.viewControllers indexOfObject:self] == 0
-    ||(self.parentViewController && (![self.parentViewController isKindOfClass:[UINavigationController class]] && [self.navigationController.viewControllers indexOfObject:self.parentViewController]==0)) ;
-//
-    
+    ||(self.parentViewController
+       && (![self.parentViewController isKindOfClass:[UINavigationController class]]
+           && [self.navigationController.viewControllers indexOfObject:self.parentViewController]==0));
 }
 
 //- (void)dealloc{

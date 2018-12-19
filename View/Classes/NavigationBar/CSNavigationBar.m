@@ -37,15 +37,14 @@ CGFloat CS_NavgiationBar_Height = 44.0;
     }
     return self;
 }
-
-//- (instancetype)initWithFrame:(CGRect)frame
-//{
-//    self = [super initWithFrame:frame];
-//    if (self) {
-//        [self cs_setView];
-//    }
-//    return self;
-//}
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self cs_setView];
+    }
+    return self;
+}
 //MARK: --SYS 视图操作--
 - (void)insertSubview:(UIView *)view atIndex:(NSInteger)index{
     [super insertSubview:view atIndex:index];

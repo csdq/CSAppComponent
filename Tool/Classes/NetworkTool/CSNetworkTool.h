@@ -27,6 +27,12 @@ typedef enum CSDataState{
     CSDataStateNomore
 }CSDataState;
 
+typedef enum CSResponseFormat{
+    CSResponseFormatPlain,
+    CSResponseFormatXML,
+    CSResponseFormatJSON
+}CSResponseFormat;
+
 @interface CSRequestPage : CSBaseModel
 CS_PROPERTY_DECLARE(NSNumber, pageIndex);
 CS_PROPERTY_DECLARE(NSNumber, pageSize);
@@ -57,6 +63,7 @@ CS_PROPERTY_DECLARE(NSURLSessionDataTask, currentTask)
 CS_PROPERTY_ASSIGN_DECLARE(CSHttpMethod ,httpMethod)
 CS_PROPERTY_DECLARE(NSMutableURLRequest, request)
 CS_PROPERTY_ASSIGN_DECLARE(NSTimeInterval, requestTimeout)
+CS_PROPERTY_ASSIGN_DECLARE(CSResponseFormat, responseFormat)
 ///请求结果RACSubject
 CS_PROPERTY_DECLARE(RACSubject ,resultSubject);
 /*!@description 创建实例*/
@@ -69,6 +76,8 @@ CS_LINKCODE_METHOD_ASSIGN(CSNetworkTool, NSTimeInterval, timeout)
 CS_LINKCODE_METHOD(CSNetworkTool, NSString, url)
 ///可选-参数
 CS_LINKCODE_METHOD(CSNetworkTool, NSDictionary, arguments)
+///可选-返回数据类型
+CS_LINKCODE_METHOD_ASSIGN(CSNetworkTool,CSResponseFormat,setResponseFormat)
 ///block模式 成功回调
 CS_LINKCODE_METHOD_ASSIGN(CSNetworkTool, CSHttpRequestCommonBlock, success)
 ///block模式 失败回调

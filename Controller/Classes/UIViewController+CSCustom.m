@@ -60,7 +60,7 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
         if(self.cs_navigationBar.superview == nil){
             [self.view insertSubview:self.cs_navigationBar atIndex:self.view.subviews.count];
         }else{
-            
+            [self.view bringSubviewToFront:self.cs_navigationBar];
         }
         [self.cs_navigationBar mas_remakeConstraints:^(MASConstraintMaker *make) {
             if(@available(iOS 11,*)){
@@ -72,6 +72,8 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
                 make.top.equalTo(self.mas_topLayoutGuide);
                 make.left.equalTo(self.view.mas_left);
                 make.right.equalTo(self.view.mas_right);
+                //MARK: to fix:somtime occurs in iOS 8.* navgaitonbar that  with = 0
+                make.width.mas_equalTo(UIScreen.mainScreen.bounds.size.width);
                 make.height.equalTo(@(44));
             }
         }];
@@ -145,6 +147,26 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
         if([ges isKindOfClass:[UIScreenEdgePanGestureRecognizer class]]){
             ges.enabled = yesOrNo;
         }
+    }
+}
+
+- (void)cs_showNavBar{
+    [self.view addSubview:self.cs_navigationBar];
+    [self.cs_navigationBar mas_remakeConstraints:^(MASConstraintMaker *make) {
+        if(@available(iOS 11,*)){
+            make.bottom.equalTo(self.view.mas_safeAreaLayoutGuideTop);
+            make.left.equalTo(self.view.mas_safeAreaLayoutGuideLeft);
+            make.right.equalTo(self.view.mas_safeAreaLayoutGuideRight);
+            make.height.equalTo(@(44));
+        }else{
+            make.top.equalTo(self.mas_topLayoutGuide);
+            make.left.equalTo(self.view.mas_left);
+            make.right.equalTo(self.view.mas_right);
+            make.height.equalTo(@(44));
+        }
+    }];
+    if(@available(iOS 11, *)){
+        self.additionalSafeAreaInsets = UIEdgeInsetsMake(44, 0, 0, 0);
     }
 }
 @end
