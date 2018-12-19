@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.10'
+    s.version          = '1.0.11'
     s.summary          = '集成封装了常用库和基类'
     
     # This description is used to generate tags and improve search results.
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
     v1.0.8 CSWebViewController增加webLoadFinishSubject 作为web加载完毕后的回调； 修改webSubject为webActionSubject
     v1.0.9 修改网络请求& View的Activity Indicator position bug 等
     v1.0.10 修改数据工具类 增加des加密/解密 ecb模式； 去除不需要的第三方库：
-    
+    v1.0.11 网络请求方法增加响应格式： json、xml等
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'
