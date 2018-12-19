@@ -9,7 +9,6 @@
 #import "CSViewController.h"
 #import <CSAppComponent/CSAppComponent.h>
 //#import <ProgressHUD/ProgressHUD.h>
-#import <MJRefresh/MJRefresh.h>
 #import <CSAppComponent/CSNavigationBar.h>
 #import <Masonry/Masonry.h>
 
