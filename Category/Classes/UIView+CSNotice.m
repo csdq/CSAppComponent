@@ -120,9 +120,15 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
         if(!imgV.superview){
             [self addSubview:imgV];
         }
-        lb.frame = CGRectMake(0, CGRectGetMaxY(imgV.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        lb.frame = CGRectMake(0,
+                              CGRectGetMaxY(imgV.frame),
+                              CGRectGetHeight(self.frame) * 0.8,
+                              MAX(0,CGRectGetHeight(self.frame) * 0.8 - CGRectGetHeight(imgV.frame)));
     }else{
-        lb.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        lb.frame = CGRectMake(0,
+                              0,
+                              CGRectGetWidth(self.frame),
+                              CGRectGetHeight(self.frame) * 0.8);
     }
     if(!lb.superview){
         [self addSubview:lb];

@@ -89,28 +89,28 @@ static CSDataTool *_instance;
 
 - (NSRegularExpression *)regUpperLetter{
     if(_regUpperLetter == nil){
-        _regUpperLetter = [NSRegularExpression regularExpressionWithPattern:@"[A-Z]{1,}" options:0 error:nil];
+        _regUpperLetter = [NSRegularExpression regularExpressionWithPattern:@"[A-Z]+" options:0 error:nil];
     }
     return _regUpperLetter;
 }
 
 - (NSRegularExpression *)regLowerLetter{
     if(_regLowerLetter == nil){
-        _regLowerLetter = [NSRegularExpression regularExpressionWithPattern:@"[a-z]{1,}" options:0 error:nil];
+        _regLowerLetter = [NSRegularExpression regularExpressionWithPattern:@"[a-z]+" options:0 error:nil];
     }
     return _regLowerLetter;
 }
 
 - (NSRegularExpression *)regNum{
     if(_regNum == nil){
-        _regNum = [NSRegularExpression regularExpressionWithPattern:@"[0-9]{1,}" options:0 error:nil];
+        _regNum = [NSRegularExpression regularExpressionWithPattern:@"[0-9]+" options:0 error:nil];
     }
     return _regNum;
 }
 
 - (NSRegularExpression *)regSymbol{
     if(_regSymbol == nil){
-        _regSymbol = [NSRegularExpression regularExpressionWithPattern:@"[!@#$%^&*(),. -]{1,}" options:0 error:nil];
+        _regSymbol = [NSRegularExpression regularExpressionWithPattern:@"[/:;()$&@\"\\.,\\?!'\\[\\]{}#%^*+=_\\\\|~<>€£¥• -]+" options:0 error:nil];
     }
     return _regSymbol;
 }
@@ -120,7 +120,7 @@ static CSDataTool *_instance;
 }
 + (NSString *)getIdCardCheckNum:(NSString *)idCardNum{
     if([idCardNum length] < 17){
-        return nil;
+        return @"";
     }else{
         int result = 0;
         NSString *lastNum = nil;
@@ -145,13 +145,12 @@ static CSDataTool *_instance;
     }
 }
 
-
 + (BOOL)isIDCardNum:(NSString *)str{
     //15位转18
-    if(15 == [str length]){
-        str = [NSString stringWithFormat:@"%@19%@",[str substringWithRange:NSMakeRange(0, 8)],[str substringWithRange:NSMakeRange(0, 7)]];
-        str = [str stringByAppendingString:[self getIdCardCheckNum:str]];
-    }
+//    if(15 == [str length]){
+//        str = [NSString stringWithFormat:@"%@19%@",[str substringWithRange:NSMakeRange(0, 8)],[str substringWithRange:NSMakeRange(8, 7)]];
+//        str = [str stringByAppendingString:[self getIdCardCheckNum:str]];
+//    }
     if([str length] != 18){
         return NO;
     }else{
@@ -160,16 +159,17 @@ static CSDataTool *_instance;
     }
 }
 
-+ (BOOL)isMale:(NSString *)idCardNum{
++ (NSNumber *)isMale:(NSString *)idCardNum{
     //    NSAssert([self isIDCardNum:idCardNum], @"Invalid ID Card Num");
-    if(![self isIDCardNum:idCardNum]){
-        return NO;
-    }
-    if(idCardNum.length==18){
-        return [[idCardNum substringWithRange:NSMakeRange(16, 1)] integerValue]%2 == 1;
+    if([self isIDCardNum:idCardNum]){
+        return @([[idCardNum substringWithRange:NSMakeRange(16, 1)] integerValue]%2 == 1);
     }else{
-        return [[idCardNum substringWithRange:NSMakeRange(14, 1)] integerValue]%2 == 1;
+        return nil;
     }
+//    if(idCardNum.length==18){
+//    }else{
+//        return [[idCardNum substringWithRange:NSMakeRange(14, 1)] integerValue]%2 == 1;
+//    }
 }
 
 + (NSDate *)getBirthDate:(NSString *)idCardNum cardNumVerify:(BOOL)yesOrNo{
@@ -204,11 +204,12 @@ static CSDataTool *_instance;
 ///密码强度是否足够
 + (BOOL)isPasswordStrongerThanWeak:(NSString *)passwd{
     CSPasswordStrength strength = [self passwordStrength:passwd];
-    return strength == CSPasswordStrong || strength == CSPasswordNormal;
+    return strength == CSPasswordStrongest || strength == CSPasswordStrong || strength == CSPasswordNormal;
 }
 
 + (BOOL)isStrongPassword:(NSString *)str{
-    return [self passwordStrength:str] == CSPasswordStrong;
+    CSPasswordStrength strength = [self passwordStrength:str];
+    return strength == CSPasswordStrongest || strength == CSPasswordStrong;
 }
 
 //密码强度
@@ -230,6 +231,7 @@ static CSDataTool *_instance;
         case 1:return CSPasswordWeak;
         case 2:return CSPasswordNormal;
         case 3:return CSPasswordStrong;
+        case 4:return CSPasswordStrongest;
     }
 }
 + (NSString *)dataToHexStr:(NSData *)data {

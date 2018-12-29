@@ -46,8 +46,10 @@ typedef enum : NSUInteger {
 + (BOOL)isCellPhoneNum:(NSString *)str;
 ///验证身份证号码
 + (BOOL)isIDCardNum:(NSString *)str;
+///身份证号 校验位
++ (NSString *)getIdCardCheckNum:(NSString *)str;
 ///通过身份证号判断男女 男 或者 女
-+ (BOOL)isMale:(NSString *)idCardNum;
++ (NSNumber *)isMale:(NSString *)idCardNum;
 ///密码强度是否足够
 + (BOOL)isStrongPassword:(NSString *)passwd;
 ///密码强度是否足够
