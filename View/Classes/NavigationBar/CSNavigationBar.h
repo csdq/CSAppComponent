@@ -8,6 +8,8 @@
 #import <UIKit/UIKit.h>
 @class RACSubject;
 @interface CSNavigationBar : UINavigationBar
+///自定义视图容器
+@property (nonatomic,strong) UIView * containView;
 ///左边按钮
 @property (nonatomic,strong) UIButton * backBtn;
 @property (nonatomic,strong) RACSubject * backBtnTouchInsideSubject;

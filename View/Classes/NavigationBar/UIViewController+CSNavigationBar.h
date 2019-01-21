@@ -10,5 +10,7 @@
 
 @interface UIViewController (CSNavigationBar)
 ///自定义导航栏
-@property (nonatomic,strong) CSNavigationBar * cs_navigationBar;
+@property (nonatomic,strong,readonly) CSNavigationBar * cs_navigationBar;
+//
+- (void)setCustomNavigationBar:(UINavigationBar *)navBar;
 @end

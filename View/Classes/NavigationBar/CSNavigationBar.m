@@ -15,8 +15,6 @@
 CGFloat CS_NavgiationBar_Height = 44.0;
 @interface CSNavigationBar()<UINavigationBarDelegate>
 {
-    ///自定义视图容器
-    UIView *_containView;
     ///导航栏背景
     __weak UIView * _barBackgroundView;
     ///导航栏背景alpha
@@ -33,18 +31,12 @@ CGFloat CS_NavgiationBar_Height = 44.0;
 {
     self = [super init];
     if (self) {
+        self.delegate = self;
         [self cs_setView];
     }
     return self;
 }
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self cs_setView];
-    }
-    return self;
-}
+
 //MARK: --SYS 视图操作--
 - (void)insertSubview:(UIView *)view atIndex:(NSInteger)index{
     [super insertSubview:view atIndex:index];
@@ -79,9 +71,8 @@ CGFloat CS_NavgiationBar_Height = 44.0;
     self.backgroundColor = [UIColor clearColor];
     self.barStyle = UIBarStyleBlack;
     self.translucent = NO;
-    self.delegate = self;
     _barBackgroundViewAlpha = 1.0;
-    _containView = ({
+    self.containView = ({
         ///容器
         UIView *content = [UIView new];
         content.backgroundColor = [UIColor clearColor];
@@ -95,7 +86,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         }];
         content;
     });
-    _titleView = ({
+    self.titleView = ({
         UILabel *label = [UILabel new];
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor whiteColor];
@@ -110,7 +101,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
         }];
         label;
     });
-    _backBtn = ({
+    self.backBtn = ({
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.hidden = YES;
         [btn setTitle:NSLocalizedStringFromTableInBundle(@"返回", @"Localizable", [CSBaseSetting cs_base_res_bundle], @"返回") forState:UIControlStateNormal];

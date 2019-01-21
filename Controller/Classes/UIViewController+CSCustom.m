@@ -33,7 +33,9 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
 }
 
 - (void)_cs_viewDidLoad{
-    RACChannelTo(self.cs_navigationBar,title) = RACChannelTo(self,title);
+    if([self.cs_navigationBar isKindOfClass:[CSNavigationBar class]]){
+        RACChannelTo(self.cs_navigationBar,title) = RACChannelTo(self,title);
+    }
     [self _cs_viewDidLoad];
     [self cs_viewDidLoad];
     [self cs_setModel];
@@ -151,7 +153,9 @@ static char const * kCS_SPIN_VIEW_KEY = "kCS_SPIN_VIEW_KEY";
 }
 
 - (void)cs_showNavBar{
-    [self.view addSubview:self.cs_navigationBar];
+    if(!self.cs_navigationBar.superview){
+        [self.view addSubview:self.cs_navigationBar];        
+    }
     [self.cs_navigationBar mas_remakeConstraints:^(MASConstraintMaker *make) {
         if(@available(iOS 11,*)){
             make.bottom.equalTo(self.view.mas_safeAreaLayoutGuideTop);

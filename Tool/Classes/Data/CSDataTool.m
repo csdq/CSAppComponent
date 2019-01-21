@@ -568,7 +568,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 - (NSDateFormatter *)dateFormatterChinese{
     if(_dateFormatterChinese == nil){
         _dateFormatterChinese = [[NSDateFormatter alloc] init];
-        //        _dateFormatterChinese.calendar = self.calender;
         _dateFormatterChinese.dateFormat = @"yyyy年M月d日";
     }
     return _dateFormatterChinese;
@@ -576,7 +575,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 - (NSDateFormatter *)dateFormatterDate{
     if(_dateFormatterDate == nil){
         _dateFormatterDate = [[NSDateFormatter alloc] init];
-        //        _dateFormatterDate.calendar = self.calender;
         _dateFormatterDate.dateFormat = @"yyyy-MM-dd";
     }
     return _dateFormatterDate;
@@ -584,7 +582,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 - (NSDateFormatter *)dateFormatterDateTime{
     if(_dateFormatterDateTime == nil){
         _dateFormatterDateTime = [[NSDateFormatter alloc] init];
-        //        _dateFormatterDateTime.calendar = self.calender;
         _dateFormatterDateTime.dateFormat = @"yyyy-MM-dd HH:mm:ss";
     }
     return _dateFormatterDateTime;
@@ -593,7 +590,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 - (NSDateFormatter *)dateFormatterReuse{
     if(_dateFormatterReuse == nil){
         _dateFormatterReuse = [[NSDateFormatter alloc] init];
-        //        _dateFormatterReuse.calendar = self.calender;
         _dateFormatterReuse.locale = self.calender.locale;
     }
     return _dateFormatterReuse;

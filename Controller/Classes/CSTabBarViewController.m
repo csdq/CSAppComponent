@@ -25,7 +25,8 @@
 
 - (void)setSelectedIndex:(NSUInteger)selectedIndex{
     [super setSelectedIndex:selectedIndex];
-    if(self.childViewControllers.count > selectedIndex){
+    if(!self.cs_navigationBar.hidden
+       && self.childViewControllers.count > selectedIndex){
         UIViewController *viewController = self.childViewControllers[selectedIndex];
         if(viewController.cs_navigationBar && viewController.cs_navigationBar.titleView){
             self.cs_navigationBar.titleView = viewController.cs_navigationBar.titleView;
@@ -52,12 +53,15 @@
 
 //MARK: delegate
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
-    if(viewController.cs_navigationBar && viewController.cs_navigationBar.titleView){
-        self.cs_navigationBar.titleView = viewController.cs_navigationBar.titleView;
-    }else{
-        self.cs_navigationBar.title = viewController.title;
+    if(!self.cs_navigationBar.hidden){
+        if(viewController.cs_navigationBar
+           && viewController.cs_navigationBar.titleView){
+            self.cs_navigationBar.titleView = viewController.cs_navigationBar.titleView;
+        }else{
+            self.cs_navigationBar.title = viewController.title;
+        }
+        self.cs_navigationBar.rightView = viewController.cs_navigationBar.rightView;
     }
-    self.cs_navigationBar.rightView = viewController.cs_navigationBar.rightView;
 }
 
 @end

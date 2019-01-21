@@ -14,7 +14,7 @@ const char * CS_Nav_Bar_Key = "CS_Nav_Bar_Key";
 @dynamic cs_navigationBar;
 - (CSNavigationBar *)cs_navigationBar{
     id obj = objc_getAssociatedObject(self, CS_Nav_Bar_Key);
-    if([obj isKindOfClass:[CSNavigationBar class]]){
+    if([obj isKindOfClass:[UINavigationBar class]]){
         return obj;
     }else{
         @weakify(self)
@@ -34,6 +34,15 @@ const char * CS_Nav_Bar_Key = "CS_Nav_Bar_Key";
         }];
         return navBar;
     }
+}
+
+- (void)setCustomNavigationBar:(UINavigationBar *)navBar{
+    @weakify(self)
+    objc_setAssociatedObject(self, CS_Nav_Bar_Key, navBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [self.rac_willDeallocSignal subscribeCompleted:^{
+        @strongify(self)
+        objc_removeAssociatedObjects(self);
+    }];
 }
 
 - (BOOL)hideBackButton{

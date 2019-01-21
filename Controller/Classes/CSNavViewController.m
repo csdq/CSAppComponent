@@ -13,7 +13,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 static CGFloat screenWidth ;
-@interface CSNavViewController ()<UINavigationControllerDelegate>
+@interface CSNavViewController ()<UINavigationControllerDelegate,UIViewControllerInteractiveTransitioning>
 {
     CGPoint startTouch;
     UIImageView *lastScreenShootView;
@@ -301,4 +301,8 @@ static CGFloat screenWidth ;
     ||[self.viewControllers indexOfObject:vc] == 0
     ||(vc.parentViewController && (![vc.parentViewController isKindOfClass:[UINavigationController class]] && [self.viewControllers indexOfObject:vc.parentViewController]==0));
 }
+
+//
+
+
 @end
