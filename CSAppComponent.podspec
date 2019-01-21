@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.12'
+    s.version          = '1.0.13'
     s.summary          = '集成封装了常用库和基类'
     
     # This description is used to generate tags and improve search results.
@@ -31,6 +31,7 @@ Pod::Spec.new do |s|
     v1.0.10 修改数据工具类 增加des加密/解密 ecb模式； 去除不需要的第三方库：
     v1.0.11 网络请求方法增加响应格式： json、xml等
     v1.0.12 密码强度检测方法修改
+    v1.0.13 修改UIView+CSNotice 添加新的调用方法等
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'
