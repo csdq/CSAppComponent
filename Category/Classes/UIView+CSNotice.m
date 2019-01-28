@@ -9,7 +9,7 @@
 #import <objc/runtime.h>
 const char * cs_notice_view_key = "cs_notice_view_key";
 const char * cs_notice_title_key = "cs_notice_title_key";
-const char * cs_notice_img_key = "cs_notice_img_key";
+//const char * cs_notice_img_key = "cs_notice_img_key";
 const char * cs_notice_block_key = "cs_notice_block_key";
 const char * cs_notice_ges_key = "cs_notice_ges_key";
 const char * cs_notice_spin_key = "cs_notice_spin_key";
@@ -71,27 +71,6 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
     return spin;
 }
 
-- (UIImageView *)cs_getImgView{
-    UIImageView *imgV = objc_getAssociatedObject(self, cs_notice_img_key);
-    if(!imgV){
-        imgV = [[UIImageView alloc] init];
-        imgV.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame) * 0.6, CGRectGetWidth(self.frame) * 0.6);
-        imgV.center = CGPointMake(self.frame.size.width /2.0f, self.frame.size.height / 2.4);
-    }
-    if(imgV){
-        CGRect frame = imgV.frame;
-        imgV.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
-        imgV.center = CGPointMake(self.frame.size.width /2.0f, self.frame.size.height / 2.4);
-        imgV.userInteractionEnabled = YES;
-        NSArray *gesAry = imgV.gestureRecognizers;
-        for (UIGestureRecognizer *ges in gesAry) {
-            [imgV removeGestureRecognizer:ges];
-        }
-        [imgV addGestureRecognizer:[self cs_getGesture]];
-    }
-    return imgV;
-}
-
 - (UITapGestureRecognizer *)cs_getGesture{
      UITapGestureRecognizer *tapGes = objc_getAssociatedObject(self, cs_notice_ges_key);
     if(!tapGes){
@@ -121,77 +100,91 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
     return lb;
 }
 
-- (ReloadBlock)cs_getBlock{
+- (CSViewNoticeDataReloadBlock)cs_getBlock{
     return objc_getAssociatedObject(self, cs_notice_block_key);
 }
 
-- (void)cs_showNoticeText:(NSString *)txt{
-    UILabel *lb = [self cs_getTitleView];
-    lb.text = txt;
-    UIImageView *imgV = [self cs_getImgView];
-    if(imgV){
-        if(!imgV.superview){
-            [self addSubview:imgV];
-        }
-        lb.frame = CGRectMake(0,
-                              CGRectGetMaxY(imgV.frame),
-                              CGRectGetWidth(self.frame),
-                              MAX(30,CGRectGetHeight(self.frame) - CGRectGetHeight(imgV.frame)));
-    }else{
-        lb.frame = CGRectMake(0,
-                              0,
-                              CGRectGetWidth(self.frame),
-                              CGRectGetHeight(self.frame) * 0.8);
-    }
-    if(!lb.superview){
-        [self addSubview:lb];
-    }
-}
-
-- (void)cs_hideNotice{
-    UILabel *lb = [self cs_getTitleView];
-    if(lb && lb.superview){
-        [lb removeFromSuperview];
-    }
-    UIImageView *imgV = [self cs_getImgView];
-    if(imgV && imgV.superview){
-        [imgV removeFromSuperview];
-    }
-    [self cs_hideNoticeView];
-//    objc_removeAssociatedObjects(self);
-}
-
-- (void)cs_setNoticeImg:(UIImageView *)imgView{
-     objc_setAssociatedObject(self, cs_notice_img_key, imgView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)cs_addTouchReloadBlock:(ReloadBlock)reloadBlock{
+- (void)cs_addTouchReloadBlock:(CSViewNoticeDataReloadBlock)reloadBlock{
     [self cs_getTitleView].userInteractionEnabled = YES;
     objc_setAssociatedObject(self, cs_notice_block_key, reloadBlock, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)cs_reloadData{
-    ReloadBlock block =  [self cs_getBlock];
+    CSViewNoticeDataReloadBlock block =  [self cs_getBlock];
     if(block){
         block();
     }
 }
 
+- (void)cs_showNoticeText:(NSString *)txt{
+    [self cs_showNotice:txt img:nil];
+}
+
 ///显示提示 图片和文字
 - (void)cs_showNotice:(NSString *)txt
                   img:(UIImage *)img{
+    [self cs_showNotice:txt img:img reloadBlock:nil];
+}
+
+///显示提示 图片和文字
+- (void)cs_showNotice:(NSString *)txt
+                  img:(UIImage *)img
+          reloadBlock:(nullable CSViewNoticeDataReloadBlock)block{
     UIView * noticeView = [self cs_getNoticeView];
     UIImageView * imgV = (UIImageView *)[noticeView viewWithTag:100];
     imgV.image = img;
     UILabel * lb = (UILabel *)[noticeView viewWithTag:101];
     lb.text = txt;
     noticeView.frame = self.bounds;
+    [noticeView removeConstraints:noticeView.constraints];
+//    CGFloat imgWidth = MIN(120,CGRectGetHeight(self.frame) * 0.4);
+    //    CGFloat margin = MAX(0,(CGRectGetWidth(self.frame)-imgWidth)/2.0);
+    if(img == nil){
+        [noticeView removeConstraints:imgV.constraints];
+        
+        [noticeView addConstraints:@[[NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:noticeView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0],
+//                                     [NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:noticeView attribute:NSLayoutAttributeTop multiplier:1 constant:0],
+                                     [NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:noticeView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0],
+                                     [NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:80],
+                                     [NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:80]]];
+    
+    }else{
+        [noticeView addConstraints:@[[NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:noticeView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0],
+                                     [NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:noticeView attribute:NSLayoutAttributeTop multiplier:1 constant:0],
+//                                     [NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:noticeView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0],
+                                     [NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:80],
+                                     [NSLayoutConstraint constraintWithItem:imgV attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:80]]];
+        
+    }
+    
+    [noticeView removeConstraints:lb.constraints];
+    [noticeView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[lb]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(lb)]];
+    [noticeView addConstraints:@[
+                          [NSLayoutConstraint constraintWithItem:lb attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:noticeView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0],
+//                          [NSLayoutConstraint constraintWithItem:lb attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:imgV attribute:NSLayoutAttributeBottom multiplier:1 constant:8],
+                          [NSLayoutConstraint constraintWithItem:lb attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:noticeView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0],
+//                          [NSLayoutConstraint constraintWithItem:lb attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0],
+//                          [NSLayoutConstraint constraintWithItem:lb attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0]
+                          ]
+      ];
+    
+//    [lb mas_remakeConstraints:^(MASConstraintMaker *make) {
+//        make.left.and.right.equalTo(noticeView);
+//        make.top.equalTo(imgV.mas_bottom).offset(8);
+//    }];
+    
     if(!noticeView.superview){
         [self addSubview:noticeView];
     }
+    
+    if(block){
+        objc_setAssociatedObject(self, cs_notice_block_key, block, OBJC_ASSOCIATION_COPY_NONATOMIC);
+        noticeView.userInteractionEnabled = YES;
+        [noticeView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cs_reloadData)]];
+    }
 }
 
-- (void)cs_hideNoticeView{
+- (void)cs_hideNotice{
     UIView * noticeView = [self cs_getNoticeView];
     if(noticeView.superview){
         [noticeView removeFromSuperview];

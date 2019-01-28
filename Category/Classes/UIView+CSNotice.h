@@ -7,7 +7,7 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^ReloadBlock)(void);
+typedef void(^CSViewNoticeDataReloadBlock)(void);
 @interface UIView (CSNotice)
 @property (nonatomic,strong) UIActivityIndicatorView * cs_spin;
 //显示UIActivityIndicatorView
@@ -20,18 +20,15 @@ typedef void(^ReloadBlock)(void);
 - (void)cs_showLoadStateWithCenter:(CGPoint)center;
 //隐藏UIActivityIndicatorView
 - (void)cs_hideLoadState;
+
 ///显示提示（如果设置了图片则显示图片和文字）
 - (void)cs_showNoticeText:(NSString *)txt;
-///隐藏提示
-- (void)cs_hideNotice;
-///设置图片
-- (void)cs_setNoticeImg:(UIImageView *)imgView;
-///绑定事件block
-- (void)cs_addTouchReloadBlock:(ReloadBlock)reloadBlock;
-
 ///显示提示 图片和文字
 - (void)cs_showNotice:(NSString *)txt
-                  img:(UIImage *)img;
-- (void)cs_hideNoticeView;
+                  img:(nullable UIImage *)img;
+- (void)cs_showNotice:(NSString *)txt
+                  img:(nullable UIImage *)img
+          reloadBlock:(nullable CSViewNoticeDataReloadBlock)block;
+- (void)cs_hideNotice;
 
 @end
