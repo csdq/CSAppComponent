@@ -38,6 +38,10 @@ const char * CS_Nav_Bar_Key = "CS_Nav_Bar_Key";
 
 - (void)setCustomNavigationBar:(UINavigationBar *)navBar{
     @weakify(self)
+    CSNavigationBar * bar = self.cs_navigationBar;
+    if(bar.superview){
+        [bar removeFromSuperview];
+    }
     objc_setAssociatedObject(self, CS_Nav_Bar_Key, navBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [self.rac_willDeallocSignal subscribeCompleted:^{
         @strongify(self)
@@ -52,12 +56,4 @@ const char * CS_Nav_Bar_Key = "CS_Nav_Bar_Key";
        && (![self.parentViewController isKindOfClass:[UINavigationController class]]
            && [self.navigationController.viewControllers indexOfObject:self.parentViewController]==0));
 }
-
-//- (void)dealloc{
-//    CSNavigationBar *navBar = self.cs_navigationBar;
-//    if(navBar){
-//        [navBar removeFromSuperview];
-//    }
-//    objc_removeAssociatedObjects(self);
-//}
 @end
