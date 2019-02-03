@@ -12,7 +12,7 @@
 @property (nonatomic,assign) CGFloat nextRowY;
 @property (nonatomic,assign) CGFloat nextColumnX;
 //
-@property (nonatomic,strong) UIView * view;
+@property (nonatomic,strong) UIView<CSFlowlayoutSubviewProtocol> * view;
 //
 @property (nonatomic,weak) CSFlowlayoutViewFrameInfo * last;
 @property (nonatomic,weak) CSFlowlayoutViewFrameInfo * next;
@@ -45,7 +45,7 @@
 //
 @property (nonatomic,strong) NSMutableArray<CSFlowlayoutViewFrameInfo *> * subviewFrameInfoArray;
 //
-@property (nonatomic,strong) NSMutableArray<UIView *> * flowlayoutSubviews;
+@property (nonatomic,strong) NSMutableArray<UIView<CSFlowlayoutSubviewProtocol> *> * flowlayoutSubviews;
 @end
 
 @implementation CSFlowlayoutView
@@ -117,7 +117,7 @@
     }
 }
 //MARK:Public
-- (void)cs_addFlowlayoutSubView:(UIView *)view{
+- (void)cs_addFlowlayoutSubView:(UIView<CSFlowlayoutSubviewProtocol> *)view{
     //
     [self addSubview:view];
     [self.flowlayoutSubviews addObject:view];
@@ -139,7 +139,7 @@
     [self _cs_setFrameWith:frameInfo];
 }
 
-- (void)cs_removeFlowlayoutSubView:(nullable UIView *)view{
+- (void)cs_removeFlowlayoutSubView:(nullable UIView<CSFlowlayoutSubviewProtocol> *)view{
     if(view){
         if([self.flowlayoutSubviews containsObject:view]){
             @synchronized (self) {
@@ -164,7 +164,7 @@
     }
 }
 
-- (void)cs_updateFlowlayoutSubview:(nullable UIView *)view{
+- (void)cs_updateFlowlayoutSubview:(nullable UIView<CSFlowlayoutSubviewProtocol> *)view{
     if(view){
         if([self.flowlayoutSubviews containsObject:view]){
             NSInteger idx = [self.flowlayoutSubviews indexOfObject:view];
@@ -201,7 +201,7 @@
     }
 }
 
-- (NSInteger)cs_rowForView:(nullable UIView *)view{
+- (NSInteger)cs_rowForView:(nullable UIView<CSFlowlayoutSubviewProtocol> *)view{
     if(view){
         if([self.flowlayoutSubviews containsObject:view]){
             CSFlowlayoutViewFrameInfo * frameInfo = self.subviewFrameInfoArray[[self.flowlayoutSubviews indexOfObject:view]];
@@ -211,7 +211,7 @@
     return -1;
 }
 
-- (NSInteger)cs_columnForView:(nullable UIView *)view{
+- (NSInteger)cs_columnForView:(nullable UIView<CSFlowlayoutSubviewProtocol> *)view{
     if(view){
         if([self.flowlayoutSubviews containsObject:view]){
             CSFlowlayoutViewFrameInfo * frameInfo = self.subviewFrameInfoArray[[self.flowlayoutSubviews indexOfObject:view]];
@@ -229,6 +229,12 @@
             //Size
             CGFloat width = CGRectGetWidth(frameInfo.view.frame);
             CGFloat height = CGRectGetHeight(frameInfo.view.frame);
+            if([frameInfo.view respondsToSelector:@selector(cs_viewWidth)]){
+                width = frameInfo.view.cs_viewWidth;
+            }
+            if([frameInfo.view respondsToSelector:@selector(cs_viewHeight)]){
+                height = frameInfo.view.cs_viewHeight;
+            }
             //Calculate
             if(self.direction == CSFlowlayoutViewVertical){
                 //宽度超限
@@ -334,7 +340,7 @@
     _defaultMarginTop = defaultMarginTop;
 }
 
-- (NSMutableArray<UIView *> *)flowlayoutSubviews{
+- (NSMutableArray<UIView<CSFlowlayoutSubviewProtocol> *> *)flowlayoutSubviews{
     if(!_flowlayoutSubviews){
         _flowlayoutSubviews = [NSMutableArray array];
     }
