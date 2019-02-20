@@ -63,9 +63,10 @@ static CGFloat screenWidth ;
     self.screenShotsList = [NSMutableArray array];
     self.canDragBack = YES;
     self.delegate = self;
-    self.effectType = CSNavTransEffectTypeNone;
+    self.effectType = CSNavTransEffectTypeMove;
     screenWidth = [UIScreen mainScreen].bounds.size.width;
-
+    blackMask = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    blackMask.backgroundColor = [UIColor blackColor];
 }
 
 - (BOOL)shouldAutorotate
@@ -105,18 +106,16 @@ static CGFloat screenWidth ;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    NSBundle *res_bundle =  [NSBundle bundleWithPath:[[NSBundle bundleForClass:[CSNavViewController class]] pathForResource:@"CSBase" ofType:@"bundle"]];
+    NSBundle *res_bundle =  [NSBundle bundleWithPath:[[NSBundle bundleForClass:[CSNavViewController class]] pathForResource:@"CSAppComponent" ofType:@"bundle"]];
     UIImage *sideImg = [UIImage imageWithContentsOfFile:[res_bundle pathForResource:@"cs_leftside_shadow" ofType:@"png"]];
     UIImageView *shadowImageView = [[UIImageView alloc] initWithImage:sideImg];
     shadowImageView.frame = CGRectMake(-8, 0, 8, self.view.frame.size.height);
     [self.view addSubview:shadowImageView];
     self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
-//    __weak CSNavViewController *bSelf = self;
     NSArray<UIGestureRecognizer *> *oldGes = [self.view.gestureRecognizers copy];
     
     [oldGes enumerateObjectsUsingBlock:^(UIGestureRecognizer *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         obj.enabled = NO;
-//        [self.view removeGestureRecognizer:obj];
     }];
     _mainRecognizer = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self
                                                                                 action:@selector(paningGestureReceive:)];
@@ -161,20 +160,20 @@ static CGFloat screenWidth ;
             CGSize size = lastScreenShootView.frame.size;
             CGFloat delatX = MIN(size.width,- 0.5 * size.width + x/2.0f);
             lastScreenShootView.frame = (CGRect){delatX,0,lastScreenShootView.frame.size.width,lastScreenShootView.frame.size.height};
-            blackMask.alpha = MAX(0.1,0.3 - (x/800.0));
+            blackMask.alpha = MAX(0.01,0.4 - (x/screenWidth/2.0f));
         }
             break;
         case CSNavTransEffectTypeScale:
         {
             float scale = MIN(1.05,(x/6400.0)+0.95);
-            float alpha = MAX(0.1,0.3 - (x/800.0));
+            float alpha = MAX(0.01,0.4 - (x/screenWidth/2.0f));
             lastScreenShootView.transform = CGAffineTransformMakeScale(scale, scale);
             blackMask.alpha = alpha;
         }
             break;
         case CSNavTransEffectTypeNone:
             lastScreenShootView.frame = self.view.bounds;
-            blackMask.alpha = 0;
+            blackMask.alpha = 0.4;
         default:
             break;
     }
@@ -201,8 +200,7 @@ static CGFloat screenWidth ;
                 self.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width , frame.size.height)];
                 [self.view.superview insertSubview:self.backgroundView belowSubview:self.view];
                 
-                blackMask = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width , frame.size.height)];
-                blackMask.backgroundColor = [UIColor blackColor];
+                blackMask.alpha = 0.3;
                 [self.backgroundView addSubview:blackMask];
             }
             
