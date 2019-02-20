@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.16'
+    s.version          = '1.0.17'
     s.summary          = '集成封装了常用库和基类'
     
     # This description is used to generate tags and improve search results.
@@ -35,6 +35,7 @@ Pod::Spec.new do |s|
     v1.0.14 添加CSFlowlayoutView 无重用 多控件就内存爆炸的 自动流式布局
     v1.0.15 CSFlowlayoutView project ==> public
     v1.0.16 CSFlowlayoutView 添加subview protocol
+    v1.0.17 修改CSNavViewController默认返回效果
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'
