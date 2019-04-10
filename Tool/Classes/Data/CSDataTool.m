@@ -557,7 +557,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 /********/
 - (NSCalendar *)calender{
     if(_calender == nil){
-        _calender = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierRepublicOfChina];
+        _calender = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierChinese];
         _calender.locale = [NSLocale localeWithLocaleIdentifier:@"zh_cn"];
         _calender.timeZone = [NSTimeZone timeZoneWithName:@"GMT+8"];
         _calender.firstWeekday = 2;
