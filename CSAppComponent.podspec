@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.17'
+    s.version          = '1.0.18'
     s.summary          = '集成封装了常用库和基类'
     
     # This description is used to generate tags and improve search results.
@@ -36,6 +36,7 @@ Pod::Spec.new do |s|
     v1.0.15 CSFlowlayoutView project ==> public
     v1.0.16 CSFlowlayoutView 添加subview protocol
     v1.0.17 修改CSNavViewController默认返回效果
+    v1.0.18 修复CSDataTool  NSCalendar 错误地使用了台湾时间
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'
