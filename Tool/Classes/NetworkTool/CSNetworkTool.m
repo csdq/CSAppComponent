@@ -104,7 +104,10 @@ CS_PROPERTY_BLOCK_DECLARE(CSHttpRequestCommonBlock, progressBlock)
 }
 
 + (instancetype)createInstance{
-    return [CSNetworkTool new];
+    CSNetworkTool * tool = [CSNetworkTool new];
+    //JSON Default
+    tool.responseFormat = CSResponseFormatJSON;
+    return tool;
 }
 
 + (NSString *)getIPv4Address{
@@ -389,9 +392,5 @@ CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, NSTimeInterval, timeout, {
 
 CS_LINKCODE_METHOD_IMP_ASSIGN(CSNetworkTool, CSResponseFormat, setResponseFormat, {
     self.responseFormat = value;
-})
-//
-CS_PROPERTY_INIT_CODE(CSResponseFormat, responseFormat,{
-    CSResponseFormatJSON;
 })
 @end

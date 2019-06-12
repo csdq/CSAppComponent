@@ -29,12 +29,12 @@
     [self.cs_navigationBar changeBackgroundAlpha:0.8];
 }
 - (void)cs_viewWillAppear:(BOOL)animated{
-//    [self.cs_navigationBar changeBackgroundAlpha:0.1];
+    //    [self.cs_navigationBar changeBackgroundAlpha:0.1];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-//     [self.cs_navigationBar changeBackgroundAlpha:0.1];
+    //     [self.cs_navigationBar changeBackgroundAlpha:0.1];
 }
 
 - (void)didReceiveMemoryWarning

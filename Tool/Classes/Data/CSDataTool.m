@@ -451,13 +451,11 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 + (NSString *)urlEncode:(NSString *)url{
-    return [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet  URLQueryAllowedCharacterSet]];
+    return [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 + (NSString *)urlDecode:(NSString *)url{
-    NSString *decodedString  = (__bridge_transfer NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL,
-                                                                                                                     (__bridge CFStringRef)url,                                              CFSTR(""),                          CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
-    return decodedString;
+    return [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 + (NSString *)htmlEncode:(NSString *)string{

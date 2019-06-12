@@ -38,7 +38,7 @@ const char * cs_notice_spin_key = "cs_notice_spin_key";
 }
 //显示UIActivityIndicatorView
 - (void)cs_showLoadStateWithColor:(UIColor *)color{
-    self.cs_spin.color = color;
+    self.cs_spin.color = color?color:[UIColor blueColor];
     [self cs_showLoadState];
 }
 

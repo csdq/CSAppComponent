@@ -74,6 +74,18 @@ fprintf(stderr, "-----------------------------------------\n\n");           \
 - (class *)name{if(_##name == nil){_##name = \
 (code);\
 }return _##name;}
+
+/*
+ * 懒加载
+ * class 属性类型
+ * name  属性名称
+ * code  代码块，返回属性实例对象
+ */
+#define CS_PROPERTY_ASSIGN_INIT_CODE(class,name,code)\
+- (class)name{if(_##name == nil){_##name = \
+(code);\
+}return _##name;}
+
 /*
  * 点语法 方法定义
  * return_type 返回类型

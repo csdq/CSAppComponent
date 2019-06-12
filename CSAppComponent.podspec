@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.19'
-    s.summary          = '集成封装了常用库和基类'
+    s.version          = '1.0.20'
+    s.summary          = '大杂汇 一股脑儿集装'
     
     # This description is used to generate tags and improve search results.
     #   * Think: What does it do? Why did you write it? What is the focus?
@@ -37,7 +37,8 @@ Pod::Spec.new do |s|
     v1.0.16 CSFlowlayoutView 添加subview protocol
     v1.0.17 修改CSNavViewController默认返回效果
     v1.0.18 修复CSDataTool  NSCalendar 错误地使用了台湾时间
-    v1.0.18 CSDataTool  NSCalendar 使用西历NSCalendarIdentifierGregorian
+    v1.0.19 CSDataTool  NSCalendar 使用西历NSCalendarIdentifierGregorian
+    v1.0.20 去除部分警告
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'
