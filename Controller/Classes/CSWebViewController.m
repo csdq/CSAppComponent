@@ -1,7 +1,7 @@
 //
 //  CSWebViewController.m
 //   CSAppComponent
-//
+//  window.webkit.messageHandlers.iOSApp.postMessage({"messsge":"hello app"});
 //  Created by Mr.s on 2017/3/27.
 //
 

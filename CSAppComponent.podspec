@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'CSAppComponent'
-    s.version          = '1.0.20'
+    s.version          = '1.0.21'
     s.summary          = '大杂汇 一股脑儿集装'
     
     # This description is used to generate tags and improve search results.
@@ -39,6 +39,7 @@ Pod::Spec.new do |s|
     v1.0.18 修复CSDataTool  NSCalendar 错误地使用了台湾时间
     v1.0.19 CSDataTool  NSCalendar 使用西历NSCalendarIdentifierGregorian
     v1.0.20 去除部分警告
+    v1.0.21 修复导航栏titleView长度变化异常问题
     DESC
     
     s.homepage         = 'https://github.com/csdq/CSAppComponent'

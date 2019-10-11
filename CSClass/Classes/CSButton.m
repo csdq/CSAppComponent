@@ -17,6 +17,12 @@
 
 
 @implementation CSButton
++ (instancetype)buttonWithType:(UIButtonType)buttonType{
+    CSButton * btn = [super buttonWithType:buttonType];
+    [btn btnInit];
+    return btn;
+}
+
 - (instancetype)init
 {
     self = [super init];

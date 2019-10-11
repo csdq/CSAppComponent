@@ -204,12 +204,12 @@ CGFloat CS_NavgiationBar_Height = 44.0;
     CGSize originSize = _rightView.frame.size;
     [_leftView mas_remakeConstraints:^(MASConstraintMaker *make) {
         if(originSize.height > 0){
-            make.height.mas_equalTo(originSize.height).priorityLow();
+            make.height.mas_equalTo(originSize.height);
         }else{
             make.height.mas_equalTo(44);
         }
         if(originSize.width > 0){
-            make.width.mas_equalTo(originSize.width).priorityLow();
+            make.width.mas_equalTo(originSize.width);
         }else{
             make.width.mas_equalTo(60);
         }
@@ -217,7 +217,7 @@ CGFloat CS_NavgiationBar_Height = 44.0;
             //返回按钮显示
             make.left.equalTo(self.backBtn.mas_right);
         }else{
-            make.left.equalTo(self.mas_left).offset(8);
+            make.left.equalTo(self.mas_left);
         }
         make.height.mas_equalTo(originSize.height).priorityLow();
         make.centerY.equalTo(self.mas_centerY);
@@ -231,16 +231,16 @@ CGFloat CS_NavgiationBar_Height = 44.0;
     CGSize originSize = _rightView.frame.size;
     [_rightView mas_remakeConstraints:^(MASConstraintMaker *make) {
         if(originSize.height > 0){
-            make.height.mas_equalTo(originSize.height).priorityLow();
+            make.height.mas_equalTo(originSize.height);
         }else{
             make.height.mas_equalTo(44);
         }
         if(originSize.width > 0){
-            make.width.mas_equalTo(originSize.width).priorityLow();
+            make.width.mas_equalTo(originSize.width).priorityMedium();
         }else{
             make.width.mas_equalTo(60);
         }
-        make.right.equalTo(self.mas_right).offset(-8);
+        make.right.equalTo(self.mas_right);
         make.centerY.equalTo(self.mas_centerY);
         make.width.mas_greaterThanOrEqualTo(44);
         make.width.mas_lessThanOrEqualTo(K_SCREEN_WIDTH * 0.25).priorityHigh();
@@ -253,10 +253,10 @@ CGFloat CS_NavgiationBar_Height = 44.0;
     CGSize originSize = _titleView.frame.size;
     [_titleView mas_remakeConstraints:^(MASConstraintMaker *make) {
         if(originSize.height > 0){
-            make.height.mas_equalTo(originSize.height).priorityLow();
+            make.height.mas_equalTo(originSize.height);
         }
         if(originSize.width > 0){
-            make.width.mas_equalTo(originSize.width).priorityLow();
+            make.width.mas_equalTo(originSize.width);
         }
         make.centerX.equalTo(self.mas_centerX);
         make.centerY.equalTo(self.mas_centerY);

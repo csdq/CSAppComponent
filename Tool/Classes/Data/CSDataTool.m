@@ -116,7 +116,12 @@ static CSDataTool *_instance;
 }
 
 + (BOOL)isCellPhoneNum:(NSString *)str{
-    return [str length] == 11;
+    if([str length] == 0){
+        return NO;
+    }
+//    /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",@"^[1]([3-9])[0-9]{9}$"];
+    return [predicate evaluateWithObject:str];
 }
 + (NSString *)getIdCardCheckNum:(NSString *)idCardNum{
     if([idCardNum length] < 17){
@@ -459,12 +464,34 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 + (NSString *)htmlEncode:(NSString *)string{
-    return [[string stringByReplacingOccurrencesOfString:@"<" withString:@"&lt;"] stringByReplacingOccurrencesOfString:@">" withString:@"&gt;"];
+    NSMutableString * result = [string mutableCopy];
+    [result replaceOccurrencesOfString:@"&"  withString:@"&amp;"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+//    [result replaceOccurrencesOfString:@"'"  withString:@"&#x27;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+//    [result replaceOccurrencesOfString:@"'"   withString:@"&#39;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+//    [result replaceOccurrencesOfString:@"'"  withString:@"&#x92;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"-" withString:@"&#x96;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@">"   withString:@"&gt;"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"<"   withString:@"&lt;"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    return result;
+//    return [[string stringByReplacingOccurrencesOfString:@"<" withString:@"&lt;"] stringByReplacingOccurrencesOfString:@">" withString:@"&gt;"];
     //  return [[[NSAttributedString alloc] initWithData:[string dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil] string];
 }
 
 + (NSString *)htmlDecode:(NSString *)string{
-    return [[string stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"] stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+    NSMutableString * result = [string mutableCopy];
+    [result replaceOccurrencesOfString:@"&amp;"  withString:@"&"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"&quot;" withString:@"\"" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"&#x27;" withString:@"'"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"&#39;"  withString:@"'"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"&#x92;" withString:@"'"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"&#x96;" withString:@"-"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"&gt;"   withString:@">"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"&lt;"   withString:@"<"  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    [result replaceOccurrencesOfString:@"&nbsp;"   withString:@" "  options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+    
+    return result;
+//    return [[string stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"] stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
     //    return [[[NSAttributedString alloc] initWithData:[string dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSPlainTextDocumentType} documentAttributes:nil error:nil] string];
 }
 
